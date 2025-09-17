@@ -17,14 +17,14 @@ export function PageLayout({
   className
 }: PageLayoutProps) {
   return (
-    <div className={cn('min-h-screen bg-gray-50 dark:bg-gray-900', className)}>
+    <div className={cn('min-h-screen', className)}>
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {(title || description || actions) && (
           <div className="mb-8">
             <div className="sm:flex sm:items-center sm:justify-between">
               <div>
                 {title && (
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="heading-display text-4xl sm:text-5xl font-semibold text-gray-900 dark:text-white">
                     {title}
                   </h1>
                 )}
@@ -42,7 +42,7 @@ export function PageLayout({
             </div>
           </div>
         )}
-        <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div className="rounded-xl border bg-card text-card-foreground shadow-sm">
           {children}
         </div>
       </div>

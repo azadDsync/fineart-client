@@ -27,6 +27,7 @@ import {
 import { useAuthStore, useUIStore } from '@/store';
 import { authClient } from '@/lib/auth-client';
 import { toast } from 'sonner';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 const navigation = [
   { name: 'Home', href: '/', icon: Home },
@@ -61,14 +62,14 @@ export function Navbar() {
   const isAdmin = user?.role === 'ADMIN';
   const allNavigation = isAdmin ? [...navigation, ...adminNavigation] : navigation;
 
-  return (
-    <nav className="border-b bg-white dark:bg-gray-900">
+    return (
+    <nav className="sticky top-0 z-50 border-b border-white/20 dark:border-white/10 bg-background/60 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center">
-              <Link href="/" className="text-xl font-bold text-primary">
-                FineArt Club
+              <Link href="/" className="text-2xl font-semibold text-primary heading-display tracking-tight">
+                FineArt
               </Link>
             </div>
             
@@ -97,7 +98,7 @@ export function Navbar() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Mobile menu button */}
             <div className="sm:hidden">
               <Button
@@ -108,6 +109,8 @@ export function Navbar() {
                 <Menu className="h-5 w-5" />
               </Button>
             </div>
+
+            <ThemeToggle />
 
             {/* User menu */}
             {user ? (
@@ -200,6 +203,8 @@ export function Navbar() {
           </div>
         </div>
       )}
+        {/* subtle gradient hairline for glass edge */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
     </nav>
   );
 }
