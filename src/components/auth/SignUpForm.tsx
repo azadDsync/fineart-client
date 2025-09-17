@@ -18,7 +18,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, OctagonAlert, User, Mail, Lock, ArrowLeft } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 
@@ -45,8 +44,7 @@ export default function SignUpPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue,
-    watch,
+  // setValue, watch,
     reset,
   } = useForm<SignUpData>({
     resolver: zodResolver(signupSchema),

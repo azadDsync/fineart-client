@@ -1,4 +1,3 @@
-import { authClient } from './auth-client';
 import type {
   ApiResponse,
   ApiError,
@@ -32,8 +31,8 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const session = await authClient.getSession();
-    
+    // We rely on HTTP-only cookies set by Better Auth; no need to fetch session here.
+    // (Intentionally avoiding authClient.getSession() in client-side code.)
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string>),

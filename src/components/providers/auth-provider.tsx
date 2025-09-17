@@ -1,10 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, ReactNode } from 'react';
-import { authClient } from '@/lib/auth-client';
-import { useAuthStore } from '@/store';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { useEffect, ReactNode } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useAuthStore } from "@/store";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -12,46 +10,39 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const { setUser, setLoading } = useAuthStore();
-  const router = useRouter();
+
+  const { data, isPending, error } = authClient.useSession();
+
+  // Reflect loading state directly
+  useEffect(() => {
+    setLoading(isPending);
+  }, [isPending, setLoading]);
+
+  // Map session user to store
+  useEffect(() => {
+    if (data?.user) {
+      const u = data.user as any;
+      const toISO = (val: string | Date | null | undefined) =>
+        !val ? new Date().toISOString() : typeof val === "string" ? val : val.toISOString();
+      setUser({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        image: u.image || undefined,
+        role: (u.role?.toUpperCase?.() === "ADMIN" ? "ADMIN" : "MEMBER") as "ADMIN" | "MEMBER",
+        isStale: Boolean(u.isStale) || false,
+        expiresAt: u.expiresAt ? toISO(u.expiresAt) : undefined,
+        createdAt: toISO(u.createdAt),
+        updatedAt: toISO(u.updatedAt),
+      });
+    } else if (!isPending) {
+      setUser(null);
+    }
+  }, [data, isPending, setUser]);
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        setLoading(true);
-        const session = await authClient.getSession();
-        
-        if (session?.data?.user) {
-          // Map Better Auth user to our User type
-          const user = {
-            id: session.data.user.id,
-            name: session.data.user.name,
-            email: session.data.user.email,
-            image: session.data.user.image || undefined,
-            role: 'MEMBER' as const, // Default role, will be updated from API if needed
-            isStale: false, // Default value, will be updated from API if needed
-            createdAt: session.data.user.createdAt.toISOString(),
-            updatedAt: session.data.user.updatedAt.toISOString(),
-          };
-          setUser(user);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkSession();
-
-    // Check session periodically
-    const interval = setInterval(checkSession, 5 * 60 * 1000); 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [setUser, setLoading, router]);
+    if (error) console.error("Session error:", error);
+  }, [error]);
 
   return <>{children}</>;
 }
