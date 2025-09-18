@@ -28,7 +28,7 @@ import { toast } from "sonner";
 
 
 const SOCIAL_PROVIDERS = [
-  { provider: "google", icon: FaGoogle, label: "Google" },
+  { provider: "google", icon: FaGoogle, label: "Sign up with Google" },
 ];
 
 
@@ -107,161 +107,110 @@ export default function SignUpPage() {
   const isFormDisabled = isLoading || isSubmitting;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/20 via-transparent to-green-100/20" />
-      <div className="relative w-full max-w-md">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="mb-6">
-            <Button asChild variant="ghost" className="mb-4">
-              <Link href="/">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
-              </Link>
-            </Button>
+    <div className="min-h-screen w-full flex items-center justify-center p-4">
+    <div className="mx-auto grid w-[350px] gap-6 border-2 rounded-lg p-6 border-black shadow-[8px_8px_0px_#000] panel-fill">
+      <div className="grid gap-2 text-center">
+          <h1 className="text-3xl font-bold">Sign Up</h1>
+          <p className="text-balance text-muted-foreground">
+            Enter your information to create an account
+          </p>
+        </div>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Full Name</Label>
+            <Input
+              id="name"
+              placeholder="Max Robinson"
+              required
+              disabled={isFormDisabled}
+               {...register("name")}
+               className="input-fill"
+            />
+            {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
           </div>
-          <Card className="shadow-2xl border-0">
-            <CardHeader className="text-center pb-6">
-              
-              <CardTitle className="text-2xl font-bold text-gray-900">Create Account</CardTitle>
-              <p className="text-gray-600">Join Fineart & Modeling Club and start your journey</p>
-            </CardHeader>
-
-            <CardContent>
-              <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Full Name</Label>
-                  <div className="relative mt-1">
-                    <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="name"
-                      placeholder="John Doe"
-                      disabled={isFormDisabled}
-                      {...register("name")}
-                      className="pl-9 h-10"
-                    />
-                  </div>
-                  {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <div className="relative mt-1">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      disabled={isFormDisabled}
-                      {...register("email")}
-                      className="pl-9 h-10"
-                    />
-                  </div>
-                  {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative mt-1">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Create a password"
-                      disabled={isFormDisabled}
-                      {...register("password")}
-                      className="pl-9 pr-9 h-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <div className="relative mt-1">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm password"
-                      disabled={isFormDisabled}
-                      {...register("confirmPassword")}
-                      className="pl-9 pr-9 h-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                    >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
-                </div>
-
-                {serverError && (
-                  <Alert variant="destructive" className="bg-destructive/10">
-                    <OctagonAlert className="h-4 w-4" />
-                    <AlertTitle>{serverError}</AlertTitle>
-                  </Alert>
-                )}
-
-                <Button
-                  type="submit"
-                  className="w-full h-10 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 cursor-pointer"
-                  disabled={isFormDisabled}
-                >
-                  {isFormDisabled ? "Creating Account..." : "Create Account"}
-                </Button>
-              </form>
-
-              <div className="mt-6">
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <Separator />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">Or sign up with</span>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  {SOCIAL_PROVIDERS.map(({ provider, icon: Icon, label }) => (
-                    <Button
-                      key={provider}
-                      variant="outline"
-                      className="w-full h-10 cursor-pointer"
-                      onClick={() => handleSocialSignIn(provider)}
-                      disabled={isFormDisabled}
-                    >
-                      <Icon className="mr-2 h-4 w-4" />
-                      {label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                  Already have an account?{' '}
-                  <Link href="/sign-in" className="font-medium text-blue-600 hover:text-blue-500 underline underline-offset-4">
-                    Sign in here
-                  </Link>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              required
+              disabled={isFormDisabled}
+               {...register("email")}
+               className="input-fill"
+            />
+            {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                disabled={isFormDisabled}
+                 {...register("password")}
+                 className="input-fill"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+            {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                required
+                disabled={isFormDisabled}
+                 {...register("confirmPassword")}
+                 className="input-fill"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+            {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
+          </div>
+          {serverError && (
+            <Alert variant="destructive" className="bg-destructive/10">
+              <OctagonAlert className="h-4 w-4" />
+              <AlertTitle>{serverError}</AlertTitle>
+            </Alert>
+          )}
+          <Button type="submit" className="w-full" disabled={isFormDisabled}>
+            {isFormDisabled ? "Creating account..." : "Create account"}
+          </Button>
+          {SOCIAL_PROVIDERS.map(({ provider, icon: Icon, label }) => (
+            <Button
+              key={provider}
+              variant="outline"
+              className="w-full"
+              onClick={() => handleSocialSignIn(provider)}
+              disabled={isFormDisabled}
+            >
+              <Icon className="mr-2 h-4 w-4" />
+              {label}
+            </Button>
+          ))}
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Already have an account?{" "}
+          <Link href="/sign-in" className="underline">
+            Sign in
+          </Link>
+        </div>
       </div>
     </div>
   );

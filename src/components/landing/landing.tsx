@@ -18,23 +18,23 @@ export default function Landing() {
         <div className="relative mx-auto max-w-6xl px-4 py-20 sm:py-24">
           <div className="text-center">
             <div className="eyebrow inline-flex items-center gap-2 rounded-full px-3 py-1 bg-accent/15 text-accent-foreground">
-              Premium FineArt Community
+              The FineArt & Modeling Club
             </div>
             <h1 className="heading-display display-hero tracking-tight mt-5">
-              Give your ideas a <span className="highlight-rose">glow up</span>. Meet your new
-              <span className="highlight-mint"> creative </span>collaborator.
+              Give your arts a <span className="highlight-rose">glow up</span>. Meet your new
+              <span className="highlight-mint"> creative </span>family.
             </h1>
             <p className="mt-6 lead text-muted-foreground max-w-3xl mx-auto">
               Capture, organize, and elevate your ideas across work, life, and leisure.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-4">
-              <Button asChild size="lg">
+            <div className="mt-10 flex items-center justify-center gap-x-4 ">
+              {/* <Button asChild size="lg" variant="outline" className="border-black shadow-[8px_8px_0px_#000]">
                 <Link href="/paintings">
                   Explore Gallery <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/sign-up">Join the Waitlist</Link>
+              </Button> */}
+              <Button asChild size="lg" variant="outline" className="border-black shadow-[8px_8px_0px_#000] panel-fill ">
+                <Link href="/sign-up">Join the Club  <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
             </div>
           </div>

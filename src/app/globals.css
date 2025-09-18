@@ -236,4 +236,24 @@
     background: color-mix(in oklch, var(--background) 88%, white 12%);
     box-shadow: 0 10px 30px oklch(0 0 0 / 0.1);
   }
+
+  /* Panel and input fills that follow theme variables (works in light and dark) */
+  .panel-fill {
+    background: var(--card);
+    color: var(--card-foreground);
+    border-color: var(--border);
+  }
+
+  .input-fill {
+    background: var(--input);
+    color: var(--foreground);
+    border: 1px solid color-mix(in oklch, var(--foreground) 18%, var(--border) 82%);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+  }
+
+  .input-fill::placeholder {
+    color: color-mix(in oklch, var(--foreground) 40%, transparent 60%);
+    opacity: 1;
+  }
 }

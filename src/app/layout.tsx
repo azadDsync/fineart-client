@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { AuthProvider } from "@/components/providers/auth-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { AppLayout } from "@/components/layout/app-layout";
@@ -21,15 +20,15 @@ const geistMono = Geist_Mono({
 const display = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
 // Accent grotesk for numbers/labels
 const accent = Space_Grotesk({
   variable: "--font-accent",
   subsets: ["latin"],
-  display: 'swap',
-  weight: ["400","500","600","700"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -48,18 +47,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${display.variable} ${accent.variable} antialiased`}
       >
         <ErrorBoundary>
-          <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <QueryProvider>
-                <AppLayout>{children}</AppLayout>
-              </QueryProvider>
-            </ThemeProvider>
-          </AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <QueryProvider>
+              <AppLayout>{children}</AppLayout>
+            </QueryProvider>
+          </ThemeProvider>
         </ErrorBoundary>
       </body>
     </html>
