@@ -29,9 +29,7 @@ export function ThemeProvider({
   children,
   defaultTheme = 'system',
   storageKey = 'fineart-ui-theme',
-  attribute = 'class',
   enableSystem = true,
-  disableTransitionOnChange = false,
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(defaultTheme);
@@ -96,3 +94,4 @@ export const useTheme = () => {
 
   return context;
 };
+

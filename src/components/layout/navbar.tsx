@@ -160,13 +160,13 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" asChild>
+              <div className="hidden sm:flex  items-center space-x-2">
+                <Button  asChild>
                   <Link href="/sign-in">Sign in</Link>
                 </Button>
-                <Button asChild>
+                {/* <Button asChild>
                   <Link href="/sign-up">Sign up</Link>
-                </Button>
+                </Button> */}
               </div>
             )}
           </div>

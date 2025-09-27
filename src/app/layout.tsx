@@ -5,6 +5,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { AppLayout } from "@/components/layout/app-layout";
+import { AuthProvider } from "@/components/providers/auth-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${display.variable} ${accent.variable} antialiased`}
       >
         <ErrorBoundary>
+          <AuthProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -57,6 +59,7 @@ export default function RootLayout({
               <AppLayout>{children}</AppLayout>
             </QueryProvider>
           </ThemeProvider>
+          </AuthProvider>
         </ErrorBoundary>
       </body>
     </html>

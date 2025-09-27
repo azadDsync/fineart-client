@@ -22,15 +22,18 @@ import {
 } from "@/components/ui/alert";
 
 interface VerifyPageProps {
-  searchParams?: {
+  // In Next.js 15, searchParams is a Promise on the server and must be awaited
+  searchParams?: Promise<{
     error?: string;
     message?: string;
-  };
+  }>;
 }
 
 export default async function VerifyPage({ searchParams }: VerifyPageProps) {
-  const error = searchParams?.error;
-  const message = searchParams?.message;
+  // Await searchParams before accessing its properties to avoid sync dynamic API error
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const error = resolvedSearchParams.error;
+  const message = resolvedSearchParams.message;
 
   const isInvalidToken = error === "invalid_token";
   const isVerificationSent = message === "email_verification_sent";

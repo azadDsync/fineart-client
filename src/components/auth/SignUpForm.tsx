@@ -5,20 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, OctagonAlert, User, Mail, Lock, ArrowLeft } from "lucide-react";
+
+import { Eye, EyeOff, OctagonAlert} from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 
 import { authClient } from "@/lib/auth-client";

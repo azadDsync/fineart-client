@@ -1,13 +1,14 @@
 import { PageLayout } from '@/components/layout/page-layout';
+import EventsList from '@/components/events/events-list';
 
 export default function EventsPage() {
   return (
     <PageLayout
       title="Events"
-      description="Workshops, exhibitions, and gatherings."
+      description="Workshops, exhibitions, critiques & community gatherings."
     >
-      <div className="p-8">
-        <div className="heading-display text-3xl">Upcoming events will be listed here.</div>
+      <div className="px-4 pb-12 pt-4 sm:px-6 lg:px-8">
+        <EventsList />
       </div>
     </PageLayout>
   );
