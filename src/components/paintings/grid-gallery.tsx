@@ -62,9 +62,7 @@ export const GridGallery: React.FC<GridGalleryProps> = ({
               <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{card.subtitle}</p>
             )}
           </div>
-          <div className="mt-1 text-[10px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-            Mindfulness Retreat | Bali
-          </div>
+          
         </div>
       </div>
     ));

@@ -12,10 +12,18 @@ This README covers the project overview, local setup, development commands, and 
 - Getting started (dev & build)
 - Environment & configuration
 - Contributing (branching, commits, PRs, code style, tests)
-- Code of Conduct & contact
-
 ## Project overview
 
+
+### Cloudinary setup
+
+To enable image upload on the My Paintings page, set these env vars (e.g., in `.env.local`):
+
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` — your Cloud name
+- `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` — an unsigned upload preset that allows client uploads
+- `NEXT_PUBLIC_CLOUDINARY_FOLDER` — optional folder name to organize assets (e.g. `fineart/paintings`)
+
+Also ensure `next.config.ts` allows images from `res.cloudinary.com` (already configured).
 The Fineart & Modeling Club website is a modern, server-rendered React app (Next.js) used by the club to:
 
 - Share announcements and events

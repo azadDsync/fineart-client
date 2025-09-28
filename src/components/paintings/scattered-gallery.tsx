@@ -281,7 +281,7 @@ export const GalleryCard: React.FC<CardProps> = ({ card, width, height }) => {
           <h3 className="font-serif text-base leading-snug line-clamp-2">{card.title}</h3>
           {card.subtitle && <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{card.subtitle}</p>}
         </div>
-        <div className="mt-1 text-[10px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400">Mindfulness Retreat | Bali</div>
+        
       </div>
     </div>
   );

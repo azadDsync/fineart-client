@@ -47,18 +47,28 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      const error: ApiError = await response.json().catch(() => ({
-        error: 'Network error',
-        status: response.status,
-      }));
-      throw error;
+      type MaybeErr = Partial<ApiError> & { message?: string };
+      let parsed: MaybeErr = { error: 'Network error', status: response.status };
+      try {
+        parsed = await response.json();
+      } catch {
+        // keep default parsed
+      }
+      const message = typeof parsed.error === 'string'
+        ? parsed.error
+        : (typeof parsed.message === 'string' ? parsed.message : 'Request failed');
+      const err = new Error(message) as Error & { status?: number; code?: string };
+      err.status = parsed.status ?? response.status;
+      err.code = parsed.code;
+      throw err;
     }
 
     return response.json();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private buildQueryString(params: any): string {
+  private buildQueryString(
+    params: PaginationParams | SearchUsersParams | SearchAlumniParams | Record<string, unknown>
+  ): string {
     const filteredParams = Object.entries(params)
       .filter(([, value]) => value !== undefined && value !== null && value !== '')
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
@@ -229,8 +239,7 @@ class ApiClient {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async getAlumniStats(): Promise<ApiResponse<any>> {
+  async getAlumniStats(): Promise<ApiResponse<Record<string, unknown>>> {
     return this.request('/alumni/stats/overview');
   }
 

@@ -1,10 +1,10 @@
-import { RoleGate } from '@/components/auth/RoleGate';
 import { AdminDashboard } from '@/components/dashboard/admin-dashboard';
+import { AdminShell } from '@/components/admin/AdminShell';
 
 export default function AdminPage() {
   return (
-    <RoleGate allow={['ADMIN']} redirectTo="/">
+    <AdminShell>
       <AdminDashboard />
-    </RoleGate>
+    </AdminShell>
   );
 }

@@ -52,6 +52,12 @@ export interface Alumni {
   email?: string;
   batchYear?: number;
   details?: string;
+  imageUrl?: string;
+  website?: string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
+  github?: string;
   adminId: string;
   createdAt: string;
   updatedAt: string;
@@ -124,6 +130,12 @@ export interface CreateAlumniData {
   email?: string;
   batchYear?: number;
   details?: string;
+  imageUrl?: string;
+  website?: string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
+  github?: string;
 }
 
 export interface UpdateAlumniData {
@@ -131,6 +143,12 @@ export interface UpdateAlumniData {
   email?: string;
   batchYear?: number;
   details?: string;
+  imageUrl?: string;
+  website?: string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
+  github?: string;
 }
 
 // Admin types

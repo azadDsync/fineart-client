@@ -7,7 +7,7 @@ export default function AlumniPage() {
       title="Alumni"
       description="Artists who took their craft further — explore disciplines, practices & trajectories."
     >
-      <div className="px-4 pb-12 pt-4 sm:px-6 lg:px-8">
+      <div className="">
         <AlumniList />
       </div>
     </PageLayout>

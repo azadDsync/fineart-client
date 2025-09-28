@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/utils';
 
 export function UserDashboard() {
   const qc = useQueryClient();
@@ -18,16 +19,15 @@ export function UserDashboard() {
     queryFn: () => apiClient.getMyPaintings(),
   });
 
-  interface ApiError { error?: string }
-  const createPainting = useMutation<{ data: unknown }, ApiError>({
+  const createPainting = useMutation({
     mutationFn: () => apiClient.createPainting(form),
     onSuccess: () => {
       toast.success('Painting created');
       setForm({ title: '', description: '', imageUrl: '' });
       qc.invalidateQueries({ queryKey: ['my-paintings'] });
     },
-    onError: (e) => {
-      toast.error(e?.error || 'Failed to create painting');
+    onError: (e: unknown) => {
+      toast.error(getErrorMessage(e, 'Failed to create painting'));
     }
   });
 

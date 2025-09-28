@@ -7,7 +7,7 @@ export default function AnnouncementsPage() {
       title="Announcements"
       description="Calls, opportunities, facilities updates & community news."
     >
-      <div className="px-4 pb-12 pt-4 sm:px-6 lg:px-8">
+      <div className="">
         <AnnouncementsList />
       </div>
     </PageLayout>
