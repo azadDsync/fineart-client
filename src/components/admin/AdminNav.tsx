@@ -14,8 +14,8 @@ export function AdminNav() {
   const pathname = usePathname();
   return (
     <nav className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <ul className="flex items-center gap-1 overflow-x-auto py-1">
+      <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+        <ul className="flex items-center gap-1 overflow-x-auto ">
           {links.map((l) => {
             const active = pathname === l.href;
             return (

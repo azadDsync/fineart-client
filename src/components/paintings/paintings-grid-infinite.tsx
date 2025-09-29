@@ -103,7 +103,7 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
         )}
 
         {items.map((p, idx) => (
-          <div key={p.id} className="group relative rounded-xl border  overflow-hidden border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[4px_4px_0px_#000]">
+          <div key={p.id} className="group relative rounded-xl border  overflow-hidden border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[8px_8px_0px_#000]">
             <button
               type="button"
               onClick={() => setLightboxIdx(idx)}
