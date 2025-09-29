@@ -30,9 +30,10 @@ function cloudinaryThumb(url: string, width = 800) {
 interface PaintingsGridInfiniteProps {
   pageSize?: number;
   className?: string;
+  search?: string;
 }
 
-export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pageSize = 20, className }) => {
+export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pageSize = 20, className, search }) => {
   const {
     data,
     isLoading,
@@ -42,8 +43,8 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
     isFetchingNextPage,
     refetch,
   } = useInfiniteQuery<ApiResponse<Painting[]>>({
-    queryKey: ["paintings-infinite", { pageSize }],
-    queryFn: async ({ pageParam = 1 }) => apiClient.getPaintings({ page: pageParam as number, limit: pageSize }),
+    queryKey: ["paintings-infinite", { pageSize, search: search ?? "" }],
+    queryFn: async ({ pageParam = 1 }) => apiClient.getPaintings({ page: pageParam as number, limit: pageSize, search }),
     getNextPageParam: (lastPage) => {
       const pg = lastPage.pagination;
       if (!pg) return undefined;
@@ -102,7 +103,7 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
         )}
 
         {items.map((p, idx) => (
-          <div key={p.id} className="group relative rounded-xl border overflow-hidden border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[4px_4px_0px_#000]">
+          <div key={p.id} className="group relative rounded-xl border  overflow-hidden border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[4px_4px_0px_#000]">
             <button
               type="button"
               onClick={() => setLightboxIdx(idx)}

@@ -113,9 +113,8 @@ export default function Landing() {
                   <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15"><Calendar className="h-5 w-5 text-accent-foreground" /></span>
                   Upcoming Events
                 </h2>
-                <Button asChild size="sm" variant="outline" className="border-black shadow-[4px_4px_0px_#000] panel-fill">
-                  <Link href="/events">View all</Link>
-                </Button>
+
+                  <Link href="/events" className="underline font-bold">View all</Link>
               </div>
               {eventsLoading || (!upcoming.length && recentEventsLoading) ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground"><LoadingSpinner /> Loading…</div>
@@ -155,9 +154,7 @@ export default function Landing() {
                   <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15"><Megaphone className="h-5 w-5 text-accent-foreground" /></span>
                   Latest Announcements
                 </h2>
-                <Button asChild size="sm" variant="outline" className="border-black shadow-[4px_4px_0px_#000] panel-fill">
-                  <Link href="/announcements">View all</Link>
-                </Button>
+                <Link href="/announcements" className="underline font-bold">View all</Link>
               </div>
               {announcementsLoading ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground"><LoadingSpinner /> Loading…</div>
@@ -193,9 +190,7 @@ export default function Landing() {
               <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15"><ImageIcon className="h-5 w-5 text-accent-foreground" /></span>
               Top Paintings
             </h2>
-            <Button asChild size="sm" variant="outline" className="border-black shadow-[4px_4px_0px_#000] panel-fill">
-              <Link href="/paintings">View all</Link>
-            </Button>
+            <Link href="/paintings" className="underline font-bold">View all</Link>
           </div>
           {paintingsLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground"><LoadingSpinner /> Loading…</div>

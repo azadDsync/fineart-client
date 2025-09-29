@@ -47,7 +47,7 @@ export const AnnouncementsList: React.FC<AnnouncementsListProps> = ({ showFilter
 						placeholder="Search announcements…"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						className="w-64 rounded-md border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+						className="w-64 rounded-md border bg-background px-3 py-2 text-sm border-black dark:border-neutral-700/40 focus:outline-none focus:ring-2 focus:ring-ring"
 					/>
 					<button onClick={() => refetch()} disabled={isFetching} className="text-xs underline">Refresh</button>
 				</div>

@@ -47,7 +47,7 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
               placeholder="Search name, details…"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="text-xs px-3 py-1.5 rounded-md border bg-background w-56"
+              className="w-72 rounded-md border bg-background px-3 py-2 text-sm border-black dark:border-neutral-700/40 focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <input
               type="number"
@@ -55,7 +55,7 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
               placeholder="Batch year"
               value={batchYear}
               onChange={e => setBatchYear(e.target.value === "" ? "" : Number(e.target.value))}
-              className="text-xs px-3 py-1.5 rounded-md border bg-background w-32"
+              className="w-32 rounded-md border bg-background px-3 py-2 text-sm border-black dark:border-neutral-700/40 focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button onClick={() => refetch()} disabled={isFetching} className="text-xs underline">Refresh</button>
           </div>
@@ -70,7 +70,7 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
       ) : (
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {visible.map(a => (
-            <li key={a.id} className="group rounded-xl border p-5 hover:bg-[#FFD6BA] transition flex flex-col justify-between border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[8px_8px_0px_#000]">
+            <li key={a.id} className="group rounded-xl border p-5 hover:bg-[#FFD6BA] transition flex flex-col justify-between border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[4px_4px_0px_#000]">
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="font-medium text-base leading-snug">{a.name}</h3>

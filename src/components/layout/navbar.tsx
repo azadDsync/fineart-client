@@ -9,6 +9,7 @@ import {
   Users, 
   Settings, 
   LogOut, 
+  LogIn,
   User,
   Menu,
   Home
@@ -110,7 +111,8 @@ export function Navbar() {
               </Button>
             </div>
 
-            <ThemeToggle />
+           
+            <div className='hidden sm:flex'> <ThemeToggle /></div>
 
             {/* User menu */}
             {user ? (
@@ -160,14 +162,14 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden sm:flex  items-center space-x-2">
-                <Button  asChild>
-                  <Link href="/sign-in">Sign in</Link>
-                </Button>
-                {/* <Button asChild>
-                  <Link href="/sign-up">Sign up</Link>
-                </Button> */}
-              </div>
+              <>
+                {/* Desktop sign in */}
+                <div className="hidden sm:flex  items-center space-x-2">
+                  <Button asChild>
+                    <Link href="/sign-in">Sign in</Link>
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -200,6 +202,76 @@ export function Navbar() {
                 </Link>
               );
             })}
+                {/* Mobile: User actions when logged in */}
+                {user && (
+                  <>
+                    <div className="my-2 border-t border-border/50" />
+                    <Link
+                      href="/profile"
+                      className={cn(
+                        'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
+                        pathname === '/profile'
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                      )}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <div className="flex items-center">
+                        <User className="mr-3 h-5 w-5" />
+                        Profile
+                      </div>
+                    </Link>
+                    <Link
+                      href="/paintings/my"
+                      className={cn(
+                        'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
+                        pathname.startsWith('/paintings/my')
+                          ? 'border-primary bg-primary/10 text-primary'
+                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                      )}
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <div className="flex items-center">
+                        <Palette className="mr-3 h-5 w-5" />
+                        My Paintings
+                      </div>
+                    </Link>
+                    <button
+                      type="button"
+                      className={cn(
+                        'w-full text-left border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
+                        'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                      )}
+                      onClick={() => {
+                        setSidebarOpen(false);
+                        handleLogout();
+                      }}
+                    >
+                      <div className="flex items-center">
+                        <LogOut className="mr-3 h-5 w-5" />
+                        Log out
+                      </div>
+                    </button>
+                  </>
+                )}
+            {/* Mobile: Sign in link when logged out */}
+            {!user && (
+              <Link
+                href="/sign-in"
+                className={cn(
+                  'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
+                  pathname === '/sign-in'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                )}
+                onClick={() => setSidebarOpen(false)}
+              >
+                <div className="flex items-center">
+                  <LogIn className="mr-3 h-5 w-5" />
+                  Sign in
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       )}

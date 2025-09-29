@@ -21,6 +21,7 @@ import type {
   PaginationParams,
   SearchUsersParams,
   SearchAlumniParams,
+  SearchPaintingsParams,
   EventAttendee
 } from '@/types/api';
 
@@ -78,7 +79,7 @@ class ApiClient {
   }
 
   // Paintings API
-  async getPaintings(params: PaginationParams = {}): Promise<ApiResponse<Painting[]>> {
+  async getPaintings(params: SearchPaintingsParams = {}): Promise<ApiResponse<Painting[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/paintings${queryString}`);
   }

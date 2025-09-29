@@ -70,7 +70,7 @@ export const EventsList: React.FC<EventsListProps> = ({ showFilter = true }) => 
 						placeholder="Search events…"
 						value={search}
 						onChange={(e) => setSearch(e.target.value)}
-						className="w-64 rounded-md border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+						className="w-64 rounded-md border bg-background border-black dark:border-neutral-700/40 px-3 py-2 text-sm  focus:outline-none focus:ring-2 focus:ring-ring"
 					/>
 					<button onClick={() => refetch()} disabled={isFetching} className="text-xs underline">Refresh</button>
 				</div>

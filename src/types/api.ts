@@ -204,3 +204,8 @@ export interface SearchAlumniParams extends PaginationParams {
   batchYear?: number;
   email?: string;
 }
+
+export interface SearchPaintingsParams extends PaginationParams {
+  // Free text search against title and description
+  search?: string;
+}
