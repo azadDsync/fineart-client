@@ -706,7 +706,7 @@ export default function ProfilePage() {
                     <Palette className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">No paintings uploaded yet</p>
                     <Button variant="outline" className="mt-4" asChild>
-                      <a href="/paintings">Upload Your First Painting</a>
+                      <a href="/paintings/my">Upload Your First Painting</a>
                     </Button>
                   </div>
                 )}
