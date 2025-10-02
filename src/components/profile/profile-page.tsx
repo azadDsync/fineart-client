@@ -672,7 +672,7 @@ export default function ProfilePage() {
                     Your Paintings ({paintingsCount})
                   </CardTitle>
                   <Button variant="outline" asChild>
-                    <a href="/paintings">
+                    <a href="/paintings/my">
                       <Upload className="h-4 w-4 mr-2" />
                       Upload New
                     </a>
