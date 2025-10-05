@@ -96,7 +96,7 @@ npm run lint
 npm run format
 ```
 
-Run tests (if present)
+Run tests (skip this for now)
 
 ```bash
 npm test
@@ -143,7 +143,7 @@ Thank you for contributing — we welcome fixes, features, and docs improvements
    - Run linters and formatters before submitting: `npm run lint` and `npm run format`.
    - Keep component logic small and prefer extracting hooks for complex logic.
 
-6) Testing
+6) Testing  ( You can skip this for now ...)
 
    - Add unit tests for new logic and integration tests for key flows when possible.
    - If you add a new UI page or component, include a simple test that mounts it and checks for expected output.
@@ -155,7 +155,7 @@ Thank you for contributing — we welcome fixes, features, and docs improvements
 
 8) Updating docs
 
-   - If your change affects setup, environment variables, or deployment, update this README and any other docs.
+   - If your change affects setup, environment variables, or deployment, update this README and xyz.md in documentation folder.
 
 9) Ownership & follow-ups
 
@@ -170,9 +170,6 @@ Be respectful and constructive. Report abusive behavior to the maintainers. We a
 - If you get CORS or auth errors, confirm `NEXT_PUBLIC_API_URL` points to a running backend and your session cookies/tokens are set.
 - For build failures, run `npm run build` locally and fix lint/type errors reported by TypeScript.
 
-## Deployment
-
-The site can be deployed to Vercel, Netlify, or any Node-capable host. For Vercel, link this repository and set required environment variables in the Vercel dashboard.
 
 ## Acknowledgements
 
