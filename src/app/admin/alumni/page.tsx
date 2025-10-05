@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { Alumni, ApiResponse, SearchAlumniParams, CreateAlumniData, UpdateAlumniData } from "@/types/api";
+import { useAlumni, useAlumniStats, useCreateAlumni, useUpdateAlumni, useDeleteAlumni } from "@/lib/hooks/use-api";
+import type { Alumni, SearchAlumniParams, CreateAlumniData, UpdateAlumniData } from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,6 @@ import { getErrorMessage } from "@/lib/utils";
 const limit = 10;
 
 export default function AdminAlumniPage() {
-  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,72 +51,65 @@ export default function AdminAlumniPage() {
     }
   }, [editing]);
 
-  const queryKey = useMemo(() => ["admin-alumni", { page, name, email, batchYear }], [page, name, email, batchYear]);
-  const alumni = useQuery<ApiResponse<Alumni[]>>({
-    queryKey,
-    queryFn: async () => {
-      const params: SearchAlumniParams = {
-        page,
-        limit,
-        ...(name ? { name } : {}),
-        ...(email ? { email } : {}),
-        ...(batchYear ? { batchYear: Number(batchYear) } : {}),
-      };
-      return apiClient.getAlumni(params);
-    },
+  const queryParams = useMemo<SearchAlumniParams>(() => ({
+    page,
+    limit,
+    ...(name ? { name } : {}),
+    ...(email ? { email } : {}),
+    ...(batchYear ? { batchYear: Number(batchYear) } : {}),
+  }), [page, name, email, batchYear]);
+
+  const alumni = useAlumni(queryParams, {
     placeholderData: (prev) => prev,
   });
 
-  const stats = useQuery<ApiResponse<Record<string, unknown>>>({
-    queryKey: ["admin-alumni-stats"],
-    queryFn: () => apiClient.getAlumniStats(),
+  const stats = useAlumniStats();
+
+  const createAlumni = useCreateAlumni(() => {
+    toast.success("Alumni added");
+    setEditing(null);
   });
 
-  const createOrUpdate = useMutation({
-    mutationFn: async () => {
-      const common = {
-        email: form.email.trim() || undefined,
-        batchYear: form.batchYear ? Number(form.batchYear) : undefined,
-        details: form.details.trim() || undefined,
-        imageUrl: form.imageUrl.trim() || undefined,
-        website: form.website.trim() || undefined,
-        linkedin: form.linkedin.trim() || undefined,
-        twitter: form.twitter.trim() || undefined,
-        instagram: form.instagram.trim() || undefined,
-        github: form.github.trim() || undefined,
+  const updateAlumni = useUpdateAlumni(() => {
+    toast.success("Alumni updated");
+    setEditing(null);
+  });
+
+  const deleteAlumni = useDeleteAlumni(() => {
+    toast.success("Alumni deleted");
+  });
+
+  const handleSubmit = () => {
+    const common = {
+      email: form.email.trim() || undefined,
+      batchYear: form.batchYear ? Number(form.batchYear) : undefined,
+      details: form.details.trim() || undefined,
+      imageUrl: form.imageUrl.trim() || undefined,
+      website: form.website.trim() || undefined,
+      linkedin: form.linkedin.trim() || undefined,
+      twitter: form.twitter.trim() || undefined,
+      instagram: form.instagram.trim() || undefined,
+      github: form.github.trim() || undefined,
+    };
+    
+    if (editing) {
+      const payload: UpdateAlumniData = {
+        name: form.name.trim() || undefined,
+        ...common,
       };
-      if (editing) {
-        const payload: UpdateAlumniData = {
-          name: form.name.trim() || undefined,
-          ...common,
-        };
-        return apiClient.updateAlumni(editing.id, payload);
-      } else {
-        const payload: CreateAlumniData = {
-          name: form.name.trim(),
-          ...common,
-        };
-        return apiClient.createAlumni(payload);
-      }
-    },
-    onSuccess: () => {
-      toast.success(editing ? "Alumni updated" : "Alumni added");
-      setEditing(null);
-      qc.invalidateQueries({ queryKey: ["admin-alumni"] });
-      qc.invalidateQueries({ queryKey: ["admin-alumni-stats"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Save failed")),
-  });
-
-  const del = useMutation({
-    mutationFn: (id: string) => apiClient.deleteAlumni(id),
-    onSuccess: () => {
-      toast.success("Alumni deleted");
-      qc.invalidateQueries({ queryKey: ["admin-alumni"] });
-      qc.invalidateQueries({ queryKey: ["admin-alumni-stats"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Delete failed")),
-  });
+      updateAlumni.mutate({ id: editing.id, data: payload }, {
+        onError: (e) => toast.error(getErrorMessage(e, "Update failed")),
+      });
+    } else {
+      const payload: CreateAlumniData = {
+        name: form.name.trim(),
+        ...common,
+      };
+      createAlumni.mutate(payload, {
+        onError: (e) => toast.error(getErrorMessage(e, "Create failed")),
+      });
+    }
+  };
 
   const clearFilters = () => {
     setName("");
@@ -238,8 +229,21 @@ export default function AdminAlumniPage() {
                 <Input placeholder="https://github.com/..." value={form.github} onChange={(e) => setForm((f) => ({ ...f, github: e.target.value }))} />
               </div>
               <div className="md:col-span-2 lg:col-span-3 flex gap-2 pt-1">
-                <Button onClick={() => createOrUpdate.mutate()} disabled={!form.name.trim() || createOrUpdate.isPending}>{editing ? "Update" : "Add"}</Button>
-                {editing && <Button variant="outline" onClick={() => setEditing(null)} disabled={createOrUpdate.isPending}>Cancel</Button>}
+                <Button 
+                  onClick={handleSubmit} 
+                  disabled={!form.name.trim() || createAlumni.isPending || updateAlumni.isPending}
+                >
+                  {editing ? "Update" : "Add"}
+                </Button>
+                {editing && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setEditing(null)} 
+                    disabled={createAlumni.isPending || updateAlumni.isPending}
+                  >
+                    Cancel
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -263,7 +267,16 @@ export default function AdminAlumniPage() {
                     <td className="py-2 pr-2">
                       <div className="flex flex-wrap gap-2">
                         <Button size="sm" variant="outline" onClick={() => setEditing(a)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => del.mutate(a.id)} disabled={del.isPending}>Delete</Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => deleteAlumni.mutate(a.id, {
+                            onError: (e) => toast.error(getErrorMessage(e, "Delete failed")),
+                          })} 
+                          disabled={deleteAlumni.isPending}
+                        >
+                          Delete
+                        </Button>
                       </div>
                     </td>
                   </tr>

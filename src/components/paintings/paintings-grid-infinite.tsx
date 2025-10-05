@@ -2,9 +2,8 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, Painting } from "@/types/api";
+import { usePaintingsInfinite } from "@/lib/hooks/use-api";
+import type { Painting } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 import clsx from "clsx";
 
@@ -42,17 +41,7 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
     hasNextPage,
     isFetchingNextPage,
     refetch,
-  } = useInfiniteQuery<ApiResponse<Painting[]>>({
-    queryKey: ["paintings-infinite", { pageSize, search: search ?? "" }],
-    queryFn: async ({ pageParam = 1 }) => apiClient.getPaintings({ page: pageParam as number, limit: pageSize, search }),
-    getNextPageParam: (lastPage) => {
-      const pg = lastPage.pagination;
-      if (!pg) return undefined;
-      return pg.page < pg.totalPages ? pg.page + 1 : undefined;
-    },
-    initialPageParam: 1,
-    placeholderData: (prev) => prev,
-  });
+  } = usePaintingsInfinite({ search }, pageSize);
 
   const items = useMemo(() => (data?.pages ?? []).flatMap((p) => p.data), [data]);
 

@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, Alumni } from "@/types/api";
+import { useAlumni } from "@/lib/hooks/use-api";
+import type { Alumni } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 interface AlumniListProps {
@@ -15,10 +14,12 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
   const [batchYear, setBatchYear] = useState<number | "">("");
   const [showAll, setShowAll] = useState(false);
 
-  const { data, isLoading, error, refetch, isFetching } = useQuery<ApiResponse<Alumni[]>>({
-    queryKey: ["alumni", { name, batchYear }],
-    queryFn: async () =>
-      apiClient.getAlumni({ page: 1, limit: 100, name: name || undefined, batchYear: batchYear === "" ? undefined : Number(batchYear) }),
+  const { data, isLoading, error, refetch, isFetching } = useAlumni({ 
+    page: 1, 
+    limit: 100, 
+    name: name || undefined, 
+    batchYear: batchYear === "" ? undefined : Number(batchYear) 
+  }, {
     placeholderData: (prev) => prev,
   });
 

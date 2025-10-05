@@ -22,7 +22,8 @@ import type {
   SearchUsersParams,
   SearchAlumniParams,
   SearchPaintingsParams,
-  EventAttendee
+  EventAttendee,
+  AlumniStatsData
 } from '@/types/api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api';
@@ -240,7 +241,7 @@ class ApiClient {
     });
   }
 
-  async getAlumniStats(): Promise<ApiResponse<Record<string, unknown>>> {
+  async getAlumniStats(): Promise<ApiResponse<AlumniStatsData>> {
     return this.request('/alumni/stats/overview');
   }
 

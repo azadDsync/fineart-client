@@ -1,15 +1,11 @@
 "use client";
-import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api-client';
+import { useAdminStats } from '@/lib/hooks/use-api';
 import { CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import { Separator } from '@/components/ui/separator';
 
 export function AdminDashboard() {
-  const stats = useQuery({
-    queryKey: ['admin-stats'],
-    queryFn: () => apiClient.getAdminStats(),
-  });
+  const stats = useAdminStats();
 
   return (
     <div className="space-y-8 py-6">

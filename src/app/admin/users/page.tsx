@@ -1,8 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, User, SearchUsersParams } from "@/types/api";
+import { useUsers, useBulkUserAction, useUpdateUserStatus, useDeleteUser } from "@/lib/hooks/use-api";
+import type { User, SearchUsersParams } from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,64 +14,37 @@ import { getErrorMessage } from "@/lib/utils";
 const limit = 10;
 
 export default function AdminUsersPage() {
-  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [role, setRole] = useState<string>("ALL");
   const [isStale, setIsStale] = useState<string>("ALL");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
 
-  const queryKey = useMemo(() => ["admin-users", { page, search, role, isStale }], [page, search, role, isStale]);
-  const users = useQuery<ApiResponse<User[]>>({
-    queryKey,
-    queryFn: async () => {
-      const params: SearchUsersParams = {
-        page,
-        limit,
-        ...(search ? { search } : {}),
-        ...(role && role !== "ALL" ? { role: role as User["role"] } : {}),
-        ...(isStale !== "ALL" ? { isStale: isStale === "true" } : {}),
-      };
-      return apiClient.getUsers(params);
-    },
+  const params = useMemo((): SearchUsersParams => ({
+    page,
+    limit,
+    ...(search ? { search } : {}),
+    ...(role && role !== "ALL" ? { role: role as User["role"] } : {}),
+    ...(isStale !== "ALL" ? { isStale: isStale === "true" } : {}),
+  }), [page, search, role, isStale]);
+
+  const users = useUsers(params, {
     placeholderData: (prev) => prev,
   });
 
-  const bulkAction = useMutation({
-    mutationFn: (action: "make_stale" | "activate" | "promote_to_admin" | "demote_to_member") => {
-      const userIds = Object.keys(selected).filter((k) => selected[k]);
-      return apiClient.bulkUserAction({ userIds, action });
-    },
-    onSuccess: (res) => {
-      // @ts-expect-error message from server shape
-      toast.success(res?.message || "Bulk action applied");
-      setSelected({});
-      qc.invalidateQueries({ queryKey: ["admin-users"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (err: unknown) => toast.error(getErrorMessage(err, "Bulk action failed")),
+  const bulkAction = useBulkUserAction((res) => {
+    // @ts-expect-error message from server shape
+    toast.success(res?.message || "Bulk action applied");
+    setSelected({});
   });
 
-  const updateStatus = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { isStale: boolean; role?: User["role"]; expiresAt?: string | null } }) =>
-      apiClient.updateUserStatus(id, data),
-    onSuccess: (res) => {
-      // @ts-expect-error message from server shape
-      toast.success(res?.message || "Updated user");
-      qc.invalidateQueries({ queryKey: ["admin-users"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (err: unknown) => toast.error(getErrorMessage(err, "Update failed")),
+  const updateStatus = useUpdateUserStatus((res) => {
+    // @ts-expect-error message from server shape
+    toast.success(res?.message || "Updated user");
   });
 
-  const delUser = useMutation({
-    mutationFn: (id: string) => apiClient.deleteUser(id),
-    onSuccess: () => {
-      toast.success("User deactivated");
-      qc.invalidateQueries({ queryKey: ["admin-users"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (err: unknown) => toast.error(getErrorMessage(err, "Delete failed")),
+  const delUser = useDeleteUser(() => {
+    toast.success("User deactivated");
   });
 
   const allSelected = useMemo(() => {
@@ -124,10 +96,22 @@ export default function AdminUsersPage() {
           </div>
 
           <div className="flex flex-wrap gap-2 items-center">
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => bulkAction.mutate("make_stale")}>Mark stale</Button>
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => bulkAction.mutate("activate")}>Activate</Button>
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => bulkAction.mutate("promote_to_admin")}>Promote to admin</Button>
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => bulkAction.mutate("demote_to_member")}>Demote to member</Button>
+            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
+              const userIds = Object.keys(selected).filter((k) => selected[k]);
+              bulkAction.mutate({ userIds, action: "make_stale" });
+            }}>Mark stale</Button>
+            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
+              const userIds = Object.keys(selected).filter((k) => selected[k]);
+              bulkAction.mutate({ userIds, action: "activate" });
+            }}>Activate</Button>
+            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
+              const userIds = Object.keys(selected).filter((k) => selected[k]);
+              bulkAction.mutate({ userIds, action: "promote_to_admin" });
+            }}>Promote to admin</Button>
+            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
+              const userIds = Object.keys(selected).filter((k) => selected[k]);
+              bulkAction.mutate({ userIds, action: "demote_to_member" });
+            }}>Demote to member</Button>
           </div>
 
           <Separator />

@@ -2,9 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import clsx from "clsx";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { Announcement, ApiResponse } from "@/types/api";
+import { useAnnouncements } from "@/lib/hooks/use-api";
+import type { Announcement } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 interface AnnouncementsListProps {
@@ -14,9 +13,7 @@ interface AnnouncementsListProps {
 export const AnnouncementsList: React.FC<AnnouncementsListProps> = ({ showFilter = true }) => {
 	const [search, setSearch] = useState("");
 
-	const { data, isLoading, error, refetch, isFetching } = useQuery<ApiResponse<Announcement[]>>({
-		queryKey: ["announcements", { search }],
-		queryFn: async () => apiClient.getAnnouncements({ page: 1, limit: 100 }),
+	const { data, isLoading, error, refetch, isFetching } = useAnnouncements({ page: 1, limit: 100 }, {
 		placeholderData: (prev) => prev,
 	});
 

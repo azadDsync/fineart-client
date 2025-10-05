@@ -1,8 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, Event } from "@/types/api";
+import { useEvents, useCreateEvent, useDeleteEvent } from "@/lib/hooks/use-api";
+import type { Event } from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,27 +13,17 @@ import { getErrorMessage } from "@/lib/utils";
 const limit = 10;
 
 export default function AdminEventsPage() {
-  const qc = useQueryClient();
   const [page, setPage] = useState(1);
 
   const [form, setForm] = useState({ title: "", description: "", location: "", startDate: "", endDate: "" });
 
-  const queryKey = useMemo(() => ["admin-events", { page }], [page]);
-  const events = useQuery<ApiResponse<Event[]>>({
-    queryKey,
-    queryFn: async () => apiClient.getEvents({ page, limit }),
+  const events = useEvents({ page, limit }, {
     placeholderData: (prev) => prev,
   });
 
-  const create = useMutation({
-    mutationFn: () => apiClient.createEvent(form),
-    onSuccess: () => {
-      toast.success("Event created");
-      setForm({ title: "", description: "", location: "", startDate: "", endDate: "" });
-      qc.invalidateQueries({ queryKey: ["admin-events"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Create failed")),
+  const create = useCreateEvent(() => {
+    toast.success("Event created");
+    setForm({ title: "", description: "", location: "", startDate: "", endDate: "" });
   });
 
   const handleCreate = () => {
@@ -48,17 +37,11 @@ export default function AdminEventsPage() {
       return toast.error('Please provide valid dates');
     }
     if (end < start) return toast.error('End date must be after start date');
-    create.mutate();
+    create.mutate(form);
   };
 
-  const del = useMutation({
-    mutationFn: (id: string) => apiClient.deleteEvent(id),
-    onSuccess: () => {
-      toast.success("Event deleted");
-      qc.invalidateQueries({ queryKey: ["admin-events"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Delete failed")),
+  const del = useDeleteEvent(() => {
+    toast.success("Event deleted");
   });
 
   return (

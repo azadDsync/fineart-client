@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, Event, Announcement, Painting } from "@/types/api";
+import { useUpcomingEvents, useEvents, useAnnouncements, usePaintings } from "@/lib/hooks/use-api";
+import type { Event, Announcement, Painting } from "@/types/api";
 import { Calendar, Megaphone, ArrowRight, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,9 +37,7 @@ const formatTimeRange = (startIso?: string, endIso?: string) => {
 
 export default function Landing() {
   // Data queries for landing
-  const { data: eventsRes, isLoading: eventsLoading, error: eventsError } = useQuery<ApiResponse<Event[]>>({
-    queryKey: ["landing-events"],
-    queryFn: () => apiClient.getUpcomingEvents({ page: 1, limit: 5 }),
+  const { data: eventsRes, isLoading: eventsLoading, error: eventsError } = useUpcomingEvents({ page: 1, limit: 5 }, {
     placeholderData: (prev) => prev,
   });
 
@@ -50,22 +47,16 @@ export default function Landing() {
     data: recentEventsRes,
     isLoading: recentEventsLoading,
     error: recentEventsError,
-  } = useQuery<ApiResponse<Event[]>>({
-    queryKey: ["landing-events-recent"],
-    queryFn: () => apiClient.getEvents({ page: 1, limit: 5 }),
+  } = useEvents({ page: 1, limit: 5 }, {
     enabled: !eventsLoading && upcoming.length === 0,
     placeholderData: (prev) => prev,
   });
 
-  const { data: announcementsRes, isLoading: announcementsLoading, error: announcementsError } = useQuery<ApiResponse<Announcement[]>>({
-    queryKey: ["landing-announcements"],
-    queryFn: () => apiClient.getAnnouncements({ page: 1, limit: 3 }),
+  const { data: announcementsRes, isLoading: announcementsLoading, error: announcementsError } = useAnnouncements({ page: 1, limit: 3 }, {
     placeholderData: (prev) => prev,
   });
 
-  const { data: paintingsRes, isLoading: paintingsLoading, error: paintingsError } = useQuery<ApiResponse<Painting[]>>({
-    queryKey: ["landing-paintings"],
-    queryFn: () => apiClient.getPaintings({ page: 1, limit: 4 }),
+  const { data: paintingsRes, isLoading: paintingsLoading, error: paintingsError } = usePaintings({ page: 1, limit: 4 }, {
     placeholderData: (prev) => prev,
   });
 
