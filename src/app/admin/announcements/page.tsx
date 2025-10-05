@@ -1,8 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { Announcement, ApiResponse } from "@/types/api";
+import { useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement, useDeleteAnnouncement } from "@/lib/hooks/use-api";
+import type { Announcement } from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,47 +14,26 @@ import { getErrorMessage } from "@/lib/utils";
 const limit = 10;
 
 export default function AdminAnnouncementsPage() {
-  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
 
-  const queryKey = useMemo(() => ["admin-announcements", { page }], [page]);
-  const anns = useQuery<ApiResponse<Announcement[]>>({
-    queryKey,
-    queryFn: async () => apiClient.getAnnouncements({ page, limit }),
+  const anns = useAnnouncements({ page, limit }, {
     placeholderData: (prev) => prev,
   });
 
-  const create = useMutation({
-    mutationFn: () => apiClient.createAnnouncement({ title: title.trim(), message: message.trim() }),
-    onSuccess: () => {
-      toast.success("Announcement published");
-      setTitle("");
-      setMessage("");
-      qc.invalidateQueries({ queryKey: ["admin-announcements"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Create failed")),
+  const create = useCreateAnnouncement(() => {
+    toast.success("Announcement published");
+    setTitle("");
+    setMessage("");
   });
 
-  const update = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { title?: string; message?: string } }) => apiClient.updateAnnouncement(id, data),
-    onSuccess: () => {
-      toast.success("Announcement updated");
-      qc.invalidateQueries({ queryKey: ["admin-announcements"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Update failed")),
+  const update = useUpdateAnnouncement(() => {
+    toast.success("Announcement updated");
   });
 
-  const del = useMutation({
-    mutationFn: (id: string) => apiClient.deleteAnnouncement(id),
-    onSuccess: () => {
-      toast.success("Announcement deleted");
-      qc.invalidateQueries({ queryKey: ["admin-announcements"] });
-      qc.invalidateQueries({ queryKey: ["admin-stats"] });
-    },
-  onError: (e: unknown) => toast.error(getErrorMessage(e, "Delete failed")),
+  const del = useDeleteAnnouncement(() => {
+    toast.success("Announcement deleted");
   });
 
   return (
@@ -70,7 +48,7 @@ export default function AdminAnnouncementsPage() {
             <div className="flex flex-col gap-2">
               <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
               <Textarea placeholder="Message" value={message} onChange={(e) => setMessage(e.target.value)} rows={4} />
-              <Button onClick={() => create.mutate()} disabled={!title.trim() || !message.trim()}>Publish</Button>
+              <Button onClick={() => create.mutate({ title: title.trim(), message: message.trim() })} disabled={!title.trim() || !message.trim()}>Publish</Button>
             </div>
           </div>
           <Separator />

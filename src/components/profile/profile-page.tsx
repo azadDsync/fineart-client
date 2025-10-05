@@ -11,8 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useCurrentUser } from "@/lib/use-current-user";
+import { useMyPaintings } from "@/lib/hooks/use-api";
 import { authClient } from "@/lib/auth-client";
-import { apiClient } from "@/lib/api-client";
 import { toast } from "sonner";
 import {
   User,
@@ -46,16 +46,12 @@ interface PasswordData {
   confirmPassword: string;
 }
 
-interface UserPainting {
-  id: string;
-  title: string;
-  description?: string;
-  imageUrl: string;
-  createdAt: string;
-}
-
 export default function ProfilePage() {
   const { user, isLoading, error } = useCurrentUser();
+  const { data: paintingsRes } = useMyPaintings({ page: 1, limit: 12 });
+  const userPaintings = paintingsRes?.data ?? [];
+  const paintingsCount = paintingsRes?.pagination?.total || 0;
+
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -80,10 +76,6 @@ export default function ProfilePage() {
     new: false,
     confirm: false,
   });
-  
-  // User paintings state
-  const [userPaintings, setUserPaintings] = useState<UserPainting[]>([]);
-  const [paintingsCount, setPaintingsCount] = useState(0);
 
   // Initialize profile data when user loads
   useEffect(() => {
@@ -93,21 +85,6 @@ export default function ProfilePage() {
         email: user.email || "",
         image: user.image || "",
       });
-      loadUserPaintings();
-    }
-  }, [user]);
-
-  // Load user's paintings
-  const loadUserPaintings = useCallback(async () => {
-    if (!user) return;
-    
-    try {
-      const response = await apiClient.getMyPaintings({ page: 1, limit: 12 });
-      setUserPaintings(response.data);
-      setPaintingsCount(response.pagination?.total || 0);
-    } catch (error) {
-      console.error("Error fetching user paintings:", error);
-      toast.error("Failed to load paintings");
     }
   }, [user]);
 

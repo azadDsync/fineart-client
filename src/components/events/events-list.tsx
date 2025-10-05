@@ -2,9 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import clsx from "clsx";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, Event } from "@/types/api";
+import { useEvents } from "@/lib/hooks/use-api";
+import type { Event } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 interface EventsListProps {
@@ -14,9 +13,7 @@ interface EventsListProps {
 export const EventsList: React.FC<EventsListProps> = ({ showFilter = true }) => {
 	const [search, setSearch] = useState("");
 
-	const { data, isLoading, error, refetch, isFetching } = useQuery<ApiResponse<Event[]>>({
-		queryKey: ["events", { search }],
-		queryFn: async () => apiClient.getEvents({ page: 1, limit: 100 }),
+	const { data, isLoading, error, refetch, isFetching } = useEvents({ page: 1, limit: 100 }, {
 		placeholderData: (prev) => prev,
 	});
 

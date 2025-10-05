@@ -3,10 +3,11 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  emailVerified: boolean;
   image?: string;
   role: 'MEMBER' | 'ADMIN';
   isStale: boolean;
-  expiresAt?: string;
+  expiresAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -14,7 +15,7 @@ export interface User {
 export interface Painting {
   id: string;
   title: string;
-  description?: string;
+  description?: string | null;
   imageUrl: string;
   userId: string;
   createdAt: string;
@@ -25,8 +26,8 @@ export interface Painting {
 export interface Event {
   id: string;
   title: string;
-  description?: string;
-  location?: string;
+  description?: string | null;
+  location?: string | null;
   startDate: string;
   endDate: string;
   organizerId: string;
@@ -49,15 +50,15 @@ export interface Announcement {
 export interface Alumni {
   id: string;
   name: string;
-  email?: string;
-  batchYear?: number;
-  details?: string;
-  imageUrl?: string;
-  website?: string;
-  linkedin?: string;
-  twitter?: string;
-  instagram?: string;
-  github?: string;
+  email?: string | null;
+  batchYear?: number | null;
+  details?: string | null;
+  imageUrl?: string | null;
+  website?: string | null;
+  linkedin?: string | null;
+  twitter?: string | null;
+  instagram?: string | null;
+  github?: string | null;
   adminId: string;
   createdAt: string;
   updatedAt: string;
@@ -89,28 +90,28 @@ export interface ApiError {
 // Form types
 export interface CreatePaintingData {
   title: string;
-  description?: string;
+  description?: string | null;
   imageUrl: string;
 }
 
 export interface UpdatePaintingData {
   title?: string;
-  description?: string;
+  description?: string | null;
   imageUrl?: string;
 }
 
 export interface CreateEventData {
   title: string;
-  description?: string;
-  location?: string;
+  description?: string | null;
+  location?: string | null;
   startDate: string;
   endDate: string;
 }
 
 export interface UpdateEventData {
   title?: string;
-  description?: string;
-  location?: string;
+  description?: string | null;
+  location?: string | null;
   startDate?: string;
   endDate?: string;
 }
@@ -127,28 +128,28 @@ export interface UpdateAnnouncementData {
 
 export interface CreateAlumniData {
   name: string;
-  email?: string;
-  batchYear?: number;
-  details?: string;
-  imageUrl?: string;
-  website?: string;
-  linkedin?: string;
-  twitter?: string;
-  instagram?: string;
-  github?: string;
+  email?: string | null;
+  batchYear?: number | null;
+  details?: string | null;
+  imageUrl?: string | null;
+  website?: string | null;
+  linkedin?: string | null;
+  twitter?: string | null;
+  instagram?: string | null;
+  github?: string | null;
 }
 
 export interface UpdateAlumniData {
   name?: string;
-  email?: string;
-  batchYear?: number;
-  details?: string;
-  imageUrl?: string;
-  website?: string;
-  linkedin?: string;
-  twitter?: string;
-  instagram?: string;
-  github?: string;
+  email?: string | null;
+  batchYear?: number | null;
+  details?: string | null;
+  imageUrl?: string | null;
+  website?: string | null;
+  linkedin?: string | null;
+  twitter?: string | null;
+  instagram?: string | null;
+  github?: string | null;
 }
 
 // Admin types
@@ -197,6 +198,12 @@ export interface SearchUsersParams extends PaginationParams {
   search?: string;
   role?: 'MEMBER' | 'ADMIN';
   isStale?: boolean;
+}
+
+export interface AlumniStatsData {
+  totalAlumni: number;
+  recentAdditions: number;
+  alumniByBatch: Record<string, number>;
 }
 
 export interface SearchAlumniParams extends PaginationParams {

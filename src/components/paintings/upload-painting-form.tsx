@@ -3,8 +3,8 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import { ImagePlus, UploadCloud, X } from "lucide-react";
 import clsx from "clsx";
-import { apiClient } from "@/lib/api-client";
-import type { ApiResponse, Painting } from "@/types/api";
+import { useCreatePainting } from "@/lib/hooks/use-api";
+import type { Painting } from "@/types/api";
 
 interface UploadPaintingFormProps {
   onCreated?: (painting: Painting) => void;
@@ -29,9 +29,13 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isCloudinaryUploading, setIsCloudinaryUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const createPainting = useCreatePainting((data) => {
+    onCreated?.(data.data);
+  });
 
   const cloud = useMemo(() => ({
     name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -121,19 +125,28 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
     if (!file) { setError("Please select an image file."); return; }
     if (!title.trim()) { setError("Please enter a title."); return; }
     try {
-      setIsUploading(true);
+      setIsCloudinaryUploading(true);
       const uploaded = await uploadToCloudinary(file);
       const payload = { title: title.trim(), description: description.trim() || undefined, imageUrl: uploaded.secure_url };
-      const created: ApiResponse<Painting> = await apiClient.createPainting(payload);
-      onCreated?.(created.data);
-      reset();
+      createPainting.mutate(payload, {
+        onSuccess: () => {
+          reset();
+          setIsCloudinaryUploading(false);
+        },
+        onError: (err) => {
+          const msg = err instanceof Error ? err.message : "Failed to create painting";
+          setError(msg);
+          setIsCloudinaryUploading(false);
+        }
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Upload failed";
       setError(msg);
-    } finally {
-      setIsUploading(false);
+      setIsCloudinaryUploading(false);
     }
-  }, [file, title, description, onCreated, uploadToCloudinary]);
+  }, [file, title, description, createPainting, uploadToCloudinary]);
+
+  const isUploading = isCloudinaryUploading || createPainting.isPending;
 
   return (
     <form onSubmit={onSubmit} className={clsx("rounded-lg border p-4 space-y-3 bg-background", className)}>

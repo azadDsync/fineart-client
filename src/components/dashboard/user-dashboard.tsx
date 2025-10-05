@@ -1,6 +1,5 @@
 "use client";
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api-client';
+import { useMyPaintings, useCreatePainting } from '@/lib/hooks/use-api';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,25 +10,22 @@ import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/utils';
 
 export function UserDashboard() {
-  const qc = useQueryClient();
   const [form, setForm] = useState({ title: '', description: '', imageUrl: '' });
 
-  const paintingsQuery = useQuery({
-    queryKey: ['my-paintings'],
-    queryFn: () => apiClient.getMyPaintings(),
+  const paintingsQuery = useMyPaintings();
+
+  const createPainting = useCreatePainting(() => {
+    toast.success('Painting created');
+    setForm({ title: '', description: '', imageUrl: '' });
   });
 
-  const createPainting = useMutation({
-    mutationFn: () => apiClient.createPainting(form),
-    onSuccess: () => {
-      toast.success('Painting created');
-      setForm({ title: '', description: '', imageUrl: '' });
-      qc.invalidateQueries({ queryKey: ['my-paintings'] });
-    },
-    onError: (e: unknown) => {
-      toast.error(getErrorMessage(e, 'Failed to create painting'));
-    }
-  });
+  const handleCreate = () => {
+    createPainting.mutate(form, {
+      onError: (e) => {
+        toast.error(getErrorMessage(e, 'Failed to create painting'));
+      }
+    });
+  };
 
   return (
     <div className="space-y-8 py-6">
@@ -42,7 +38,7 @@ export function UserDashboard() {
             <Input placeholder="Title" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
             <Textarea placeholder="Description" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
             <Input placeholder="Image URL" value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} />
-            <Button disabled={createPainting.isPending} onClick={() => createPainting.mutate()}>
+            <Button disabled={createPainting.isPending} onClick={handleCreate}>
               {createPainting.isPending ? 'Creating...' : 'Create'}
             </Button>
           </CardContent>
