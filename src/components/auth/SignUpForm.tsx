@@ -87,7 +87,7 @@ export default function SignUpPage() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: process.env.NEXT_PUBLIC_MAKE_ME_PRO_CLIENT_URL,
+        callbackURL: process.env.NEXT_PUBLIC_CLIENT_URL,
       });
     } catch (error) {
       console.log(error);
