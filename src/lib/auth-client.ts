@@ -20,6 +20,9 @@ export const authClient = createAuthClient({
       }
   })],
   baseURL,
+  fetchOptions: {
+    credentials: 'include',
+  },
 });
 
 export type AuthClient = typeof authClient;
