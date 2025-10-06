@@ -5,7 +5,6 @@ import { PageLayout } from '@/components/layout/page-layout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { UploadPaintingForm } from '@/components/paintings/upload-painting-form';
 import { useMyPaintings, useDeletePainting } from '@/lib/hooks/use-api';
-import type { Painting } from '@/types/api';
 import { LoadingSpinner } from '@/components/ui/loading';
 import { ScatteredGallery } from '@/components/paintings/scattered-gallery';
 import { toast } from 'sonner';
@@ -19,14 +18,17 @@ export default function MyPaintingsPage() {
     toast.success('Painting deleted');
   });
 
-  const galleryItems = useMemo(() => items.map(p => ({
-    id: p.id,
-    title: p.title,
-    subtitle: p.description ?? undefined,
-    imageUrl: p.imageUrl,
-  })), [items]);
+  const galleryItems = useMemo(() => {
+    const paintingItems = res?.data ?? [];
+    return paintingItems.map(p => ({
+      id: p.id,
+      title: p.title,
+      subtitle: p.description ?? undefined,
+      imageUrl: p.imageUrl,
+    }));
+  }, [res?.data]);
 
-  const onCreated = (p: Painting) => {
+  const onCreated = () => {
     // The hook will automatically refetch after creation
     toast.success('Painting uploaded');
   };

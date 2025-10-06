@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import clsx from "clsx";
 import { useEvents } from "@/lib/hooks/use-api";
-import type { Event } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 interface EventsListProps {
@@ -13,13 +11,12 @@ interface EventsListProps {
 export const EventsList: React.FC<EventsListProps> = ({ showFilter = true }) => {
 	const [search, setSearch] = useState("");
 
-	const { data, isLoading, error, refetch, isFetching } = useEvents({ page: 1, limit: 100 }, {
+	const { data, isLoading, error } = useEvents({ page: 1, limit: 100 }, {
 		placeholderData: (prev) => prev,
 	});
 
-	const items = data?.data ?? [];
-
 	const filtered = useMemo(() => {
+		const items = data?.data ?? [];
 		if (!search.trim()) return items;
 		const q = search.toLowerCase();
 		return items.filter(ev =>
@@ -27,7 +24,7 @@ export const EventsList: React.FC<EventsListProps> = ({ showFilter = true }) => 
 			(ev.description?.toLowerCase().includes(q)) ||
 			(ev.location?.toLowerCase().includes(q))
 		);
-	}, [items, search]);
+	}, [data?.data, search]);
 
 	const shortDate = (iso: string) => {
 		const d = new Date(iso);

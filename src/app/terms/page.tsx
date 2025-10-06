@@ -22,7 +22,7 @@ export default function TermsOfServicePage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground mb-4">
-            Permission is granted to temporarily access the materials (information or software) on FineArt Club's platform for personal, non-commercial transitory viewing only.
+            Permission is granted to temporarily access the materials (information or software) on FineArt Club&apos;s platform for personal, non-commercial transitory viewing only.
           </p>
           <p className="text-muted-foreground">
             This is the grant of a license, not a transfer of title, and under this license you may not:
@@ -32,7 +32,7 @@ export default function TermsOfServicePage() {
             <li>Use the materials for any commercial purpose or for any public display</li>
             <li>Attempt to reverse engineer any software contained on the platform</li>
             <li>Remove any copyright or other proprietary notations from the materials</li>
-            <li>Transfer the materials to another person or "mirror" the materials on any other server</li>
+            <li>Transfer the materials to another person or &quot;mirror&quot; the materials on any other server</li>
           </ul>
         </CardContent>
       </Card>
@@ -137,7 +137,7 @@ export default function TermsOfServicePage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            If you have any questions about these Terms, please contact us through the platform's contact form or email us at support@fineartclub.com.
+            If you have any questions about these Terms, please contact us through the platform&apos;s contact form or email us at support@fineartclub.com.
           </p>
         </CardContent>
       </Card>

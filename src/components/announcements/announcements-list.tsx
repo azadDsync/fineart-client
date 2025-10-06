@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from "react";
 import clsx from "clsx";
 import { useAnnouncements } from "@/lib/hooks/use-api";
-import type { Announcement } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 interface AnnouncementsListProps {
@@ -13,20 +12,19 @@ interface AnnouncementsListProps {
 export const AnnouncementsList: React.FC<AnnouncementsListProps> = ({ showFilter = true }) => {
 	const [search, setSearch] = useState("");
 
-	const { data, isLoading, error, refetch, isFetching } = useAnnouncements({ page: 1, limit: 100 }, {
+	const { data, isLoading, error } = useAnnouncements({ page: 1, limit: 100 }, {
 		placeholderData: (prev) => prev,
 	});
 
-	const items = data?.data ?? [];
-
 	const filtered = useMemo(() => {
+		const items = data?.data ?? [];
 		if (!search.trim()) return items;
 		const q = search.toLowerCase();
 		return items.filter(a =>
 			a.title.toLowerCase().includes(q) ||
 			(a.message?.toLowerCase().includes(q))
 		);
-	}, [items, search]);
+	}, [data?.data, search]);
 
 	const formatShortDate = (iso: string) => {
 		const d = new Date(iso);

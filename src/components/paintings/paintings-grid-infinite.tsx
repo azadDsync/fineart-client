@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { usePaintingsInfinite } from "@/lib/hooks/use-api";
-import type { Painting } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 import clsx from "clsx";
 

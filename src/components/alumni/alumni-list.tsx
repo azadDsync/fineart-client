@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import { useAlumni } from "@/lib/hooks/use-api";
-import type { Alumni } from "@/types/api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 interface AlumniListProps {
@@ -23,10 +22,9 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
     placeholderData: (prev) => prev,
   });
 
-  const items = data?.data ?? [];
-
   // optional client-side extra filter across details/links
   const filtered = useMemo(() => {
+    const items = data?.data ?? [];
     if (!name) return items;
     const q = name.toLowerCase();
     return items.filter(a =>
@@ -34,7 +32,7 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
       (a.details?.toLowerCase().includes(q) ?? false) ||
       (a.website?.toLowerCase().includes(q) ?? false)
     );
-  }, [items, name]);
+  }, [data?.data, name]);
 
   const visible = showAll ? filtered : filtered.slice(0, initialLimit);
 

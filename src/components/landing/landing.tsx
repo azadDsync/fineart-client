@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading";
 import { useUpcomingEvents, useEvents, useAnnouncements, usePaintings } from "@/lib/hooks/use-api";
-import type { Event, Announcement, Painting } from "@/types/api";
 import { Calendar, Megaphone, ArrowRight, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

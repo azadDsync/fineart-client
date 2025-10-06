@@ -1,14 +1,12 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useEvents, useCreateEvent, useDeleteEvent } from "@/lib/hooks/use-api";
-import type { Event } from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { getErrorMessage } from "@/lib/utils";
 
 const limit = 10;
 

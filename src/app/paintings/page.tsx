@@ -17,7 +17,6 @@ function PaintingsContent() {
   useEffect(() => {
     const spQ = searchParams.get("q") ?? "";
     setQ(spQ);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // Debounce URL update

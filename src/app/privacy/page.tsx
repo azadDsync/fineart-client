@@ -154,7 +154,7 @@ export default function PrivacyPolicyPage() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>10. Children's Privacy</CardTitle>
+          <CardTitle>10. Children&apos;s Privacy</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
@@ -169,7 +169,7 @@ export default function PrivacyPolicyPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
+            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
           </p>
         </CardContent>
       </Card>
@@ -184,7 +184,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <ul className="list-disc list-inside text-muted-foreground space-y-1">
             <li>Email: privacy@fineartclub.com</li>
-            <li>Through the platform's contact form</li>
+            <li>Through the platform&apos;s contact form</li>
           </ul>
         </CardContent>
       </Card>
