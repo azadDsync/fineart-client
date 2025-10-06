@@ -26,7 +26,7 @@ import type {
   AlumniStatsData
 } from '@/types/api';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787/api';
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:8787/api';
 
 class ApiClient {
   private async request<T>(
