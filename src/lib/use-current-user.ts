@@ -14,13 +14,14 @@ export function useCurrentUser() {
   let current: User | null = user;
   if (!current && data?.user) {
     const raw = data.user as unknown as {
-      id: string; name: string; email: string; image?: string | null; role?: string; isStale?: boolean; expiresAt?: string | Date | null; createdAt: string | Date; updatedAt: string | Date;
+      id: string; name: string; email: string; emailVerified?: boolean; image?: string | null; role?: string; isStale?: boolean; expiresAt?: string | Date | null; createdAt: string | Date; updatedAt: string | Date;
     };
     const toISO = (v: string | Date | null | undefined) => !v ? new Date().toISOString() : typeof v === 'string' ? v : v.toISOString();
     current = {
       id: raw.id,
       name: raw.name,
       email: raw.email,
+      emailVerified: Boolean(raw.emailVerified),
       image: raw.image || undefined,
       role: raw.role?.toUpperCase() === 'ADMIN' ? 'ADMIN' : 'MEMBER',
       isStale: Boolean(raw.isStale),

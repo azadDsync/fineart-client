@@ -22,7 +22,7 @@ export default function MyPaintingsPage() {
   const galleryItems = useMemo(() => items.map(p => ({
     id: p.id,
     title: p.title,
-    subtitle: p.description,
+    subtitle: p.description ?? undefined,
     imageUrl: p.imageUrl,
   })), [items]);
 

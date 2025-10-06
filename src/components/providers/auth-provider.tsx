@@ -34,6 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         id: u.id,
         name: u.name,
         email: u.email,
+        emailVerified: Boolean(u.emailVerified),
         image: u.image || undefined,
         role: (u.role?.toUpperCase?.() === "ADMIN" ? "ADMIN" : "MEMBER") as "ADMIN" | "MEMBER",
         isStale: Boolean(u.isStale) || false,
