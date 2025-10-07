@@ -90,7 +90,7 @@ export default function SignInForm() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: process.env.NEXT_PUBLIC_CLIENT_URL,
+        callbackURL: `${process.env.NEXT_PUBLIC_CLIENT_URL}/dashboard`,
       });
     } catch (error: unknown) {
       console.log(error);
