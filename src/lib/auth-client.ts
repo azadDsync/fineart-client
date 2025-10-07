@@ -3,7 +3,7 @@ import { inferAdditionalFields } from "better-auth/client/plugins";
 
 // Prefer explicit env variable, fallback to localhost dev server
 const baseURL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:8787";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
 
 export const authClient = createAuthClient({
   plugins: [inferAdditionalFields({
@@ -22,6 +22,10 @@ export const authClient = createAuthClient({
   baseURL,
   fetchOptions: {
     credentials: 'include',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
   },
 });
 
