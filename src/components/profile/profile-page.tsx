@@ -52,6 +52,7 @@ export default function ProfilePage() {
   const userPaintings = paintingsRes?.data ?? [];
   const paintingsCount = paintingsRes?.pagination?.total || 0;
 
+  const [mounted, setMounted] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -76,6 +77,11 @@ export default function ProfilePage() {
     new: false,
     confirm: false,
   });
+
+  // Set mounted state to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Initialize profile data when user loads
   useEffect(() => {
@@ -222,7 +228,8 @@ export default function ProfilePage() {
     }
   };
 
-  if (isLoading) {
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />

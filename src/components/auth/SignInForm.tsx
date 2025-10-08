@@ -57,11 +57,11 @@ export default function SignInForm() {
         {
           email: data.email,
           password: data.password,
+          callbackURL: "/profile",
         },
         {
           onSuccess: () => {
             reset();
-            router.push("/");
           },
           onError: (error) => {
             const errorMessage =
@@ -95,7 +95,7 @@ export default function SignInForm() {
       
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL:`${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
       });
     } catch (error: unknown) {
       console.log(error);

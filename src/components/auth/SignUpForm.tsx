@@ -58,6 +58,7 @@ export default function SignUpPage() {
           name: data.name,
           email: data.email,
           password: data.password,
+          callbackURL: "/profile"
         },
         {
           onSuccess: () => {
@@ -85,14 +86,9 @@ export default function SignUpPage() {
     setServerError(null);
     setIsLoading(true);
     try {
-      // Get the correct callback URL - fallback to current origin if env var not set
-      const callbackURL = typeof window !== 'undefined' 
-        ? `${window.location.origin}/profile`
-        : `${process.env.NEXT_PUBLIC_CLIENT_URL || 'http://localhost:3000'}/profile`;
-      
       await authClient.signIn.social({
         provider,
-        callbackURL,
+        callbackURL:`${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
       });
     } catch (error) {
       console.log(error);
