@@ -114,61 +114,61 @@ class ApiClient {
     });
   }
 
-  // Events API
+  // Events API (changed to /programs to avoid ad blocker issues)
   async getEvents(params: PaginationParams = {}): Promise<ApiResponse<Event[]>> {
     const queryString = this.buildQueryString(params);
-    return this.request(`/events${queryString}`);
+    return this.request(`/programs${queryString}`);
   }
 
   async getUpcomingEvents(params: PaginationParams = {}): Promise<ApiResponse<Event[]>> {
     const queryString = this.buildQueryString(params);
-    return this.request(`/events/upcoming${queryString}`);
+    return this.request(`/programs/upcoming${queryString}`);
   }
 
   async getMyEvents(params: PaginationParams = {}): Promise<ApiResponse<Event[]>> {
     const queryString = this.buildQueryString(params);
-    return this.request(`/events/my${queryString}`);
+    return this.request(`/programs/my${queryString}`);
   }
 
   async getEvent(id: string): Promise<ApiResponse<Event>> {
-    return this.request(`/events/${id}`);
+    return this.request(`/programs/${id}`);
   }
 
   async createEvent(data: CreateEventData): Promise<ApiResponse<Event>> {
-    return this.request('/events', {
+    return this.request('/programs', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async updateEvent(id: string, data: UpdateEventData): Promise<ApiResponse<Event>> {
-    return this.request(`/events/${id}`, {
+    return this.request(`/programs/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     });
   }
 
   async deleteEvent(id: string): Promise<ApiResponse<{ message: string }>> {
-    return this.request(`/events/${id}`, {
+    return this.request(`/programs/${id}`, {
       method: 'DELETE',
     });
   }
 
   async joinEvent(id: string): Promise<ApiResponse<{ message: string }>> {
-    return this.request(`/events/${id}/join`, {
+    return this.request(`/programs/${id}/join`, {
       method: 'POST',
     });
   }
 
   async leaveEvent(id: string): Promise<ApiResponse<{ message: string }>> {
-    return this.request(`/events/${id}/leave`, {
+    return this.request(`/programs/${id}/leave`, {
       method: 'DELETE',
     });
   }
 
   async getEventAttendees(id: string, params: PaginationParams = {}): Promise<ApiResponse<EventAttendee[]>> {
     const queryString = this.buildQueryString(params);
-    return this.request(`/events/${id}/attendees${queryString}`);
+    return this.request(`/programs/${id}/attendees${queryString}`);
   }
 
   // Announcements API
