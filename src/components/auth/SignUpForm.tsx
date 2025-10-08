@@ -90,12 +90,13 @@ export default function SignUpPage() {
         provider,
         callbackURL:`${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
       });
+
+      
     } catch (error) {
       console.log(error);
       setServerError(`Failed to sign in with ${provider}. Please try again.`);
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   const isFormDisabled = isLoading || isSubmitting;

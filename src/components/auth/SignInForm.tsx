@@ -88,10 +88,6 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      // Get the correct callback URL - fallback to current origin if env var not set
-      const callbackURL = typeof window !== 'undefined' 
-        ? `${window.location.origin}/profile`
-        : `${process.env.NEXT_PUBLIC_CLIENT_URL || 'http://localhost:3000'}/profile`;
       
       await authClient.signIn.social({
         provider,
@@ -100,9 +96,8 @@ export default function SignInForm() {
     } catch (error: unknown) {
       console.log(error);
       setServerError(`Failed to sign in with ${provider}. Please try again.`);
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   const isFormDisabled = isLoading || isSubmitting;
