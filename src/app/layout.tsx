@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -7,30 +6,8 @@ import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { AppLayout } from "@/components/layout/app-layout";
 import { AuthProvider } from "@/components/providers/auth-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Artistic high-contrast serif for expressive headings
-const display = Fraunces({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// Accent grotesk for numbers/labels
-const accent = Space_Grotesk({
-  variable: "--font-accent",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
+// Using system font fallbacks defined in globals.css.
+// Removed runtime Google font fetch to avoid build-time network requests.
 
 export const metadata: Metadata = {
   title: "FineArt & Modeling Club",
@@ -44,9 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${display.variable} ${accent.variable} antialiased`}
-      >
+      <body className={`antialiased`}>
         <ErrorBoundary>
           <AuthProvider>
           <ThemeProvider

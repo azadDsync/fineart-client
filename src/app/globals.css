@@ -82,6 +82,12 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
+  /* Font variable fallbacks — use system stacks when Google fonts are not available */
+  --font-geist-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Noto Mono", monospace;
+  --font-display: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-accent: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+
   /* highlight tokens (light) */
   --hl-rose-1: oklch(0.92 0.15 20 / 0.55);
   --hl-rose-2: oklch(0.96 0.06 330 / 0.55);
