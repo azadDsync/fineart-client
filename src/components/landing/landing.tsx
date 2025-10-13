@@ -79,11 +79,7 @@ export default function Landing() {
               Capture, organize, and elevate your ideas across work, life, and leisure.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-4 ">
-              {/* <Button asChild size="lg" variant="outline" className="border-black shadow-[8px_8px_0px_#000]">
-                <Link href="/paintings">
-                  Explore Gallery <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button> */}
+              
               <Button asChild size="lg" variant="outline" className="border-black shadow-[8px_8px_0px_#000] panel-fill ">
                 <Link href="/sign-up">Join the Club  <ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
