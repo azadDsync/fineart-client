@@ -36,7 +36,7 @@ The frontend lives in this repository and communicates with a separate backend (
 ## Features
 
 - Public landing and announcements pages
-- Event listings and RSVP support
+- Event listings 
 - Paintings gallery with user uploads and personal collections
 - Authentication flow (sign in/up, password reset, email verification)
 - Admin and user dashboards with role-based access
