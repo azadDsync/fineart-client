@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import Image from "next/image";
 import { useAlumni } from "@/lib/hooks/use-api";
 import { LoadingSpinner } from "@/components/ui/loading";
 
@@ -76,13 +77,18 @@ export const AlumniList: React.FC<AlumniListProps> = ({ initialLimit = 50 }) => 
               <div className="flex flex-col md:flex-row md:items-start gap-4">
                 {a.imageUrl && (
                   <div className="order-1 md:order-2 md:ml-auto">
-                    <img
-                      src={a.imageUrl}
-                      alt={`${a.name} profile photo`}
-                      className="h-32 w-full max-w-[8rem] sm:h-36 sm:max-w-[9rem] md:h-32 md:w-32 rounded-lg object-cover border border-black dark:border-neutral-700/40"
-                      loading="lazy"
-                      referrerPolicy="no-referrer"
-                    />
+                    <div className="relative h-32 w-full max-w-[8rem] sm:h-36 sm:max-w-[9rem] md:h-32 md:w-32 rounded-lg overflow-hidden border border-black dark:border-neutral-700/40">
+                      <Image
+                        src={a.imageUrl}
+                        alt={`${a.name} profile photo`}
+                        fill
+                        sizes="(max-width: 640px) 9rem, 8rem"
+                        className="object-cover"
+                        priority={false}
+                        unoptimized={true}
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
                   </div>
                 )}
 

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -671,11 +672,14 @@ export default function ProfilePage() {
                         key={painting.id}
                         className="group cursor-pointer"
                       >
-                        <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-2">
-                          <img
+                        <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-2 relative">
+                          <Image
                             src={painting.imageUrl}
                             alt={painting.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 33vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            unoptimized={true}
                           />
                         </div>
                         <p className="text-sm font-medium truncate">{painting.title}</p>
