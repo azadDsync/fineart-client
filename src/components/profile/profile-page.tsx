@@ -10,7 +10,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useCurrentUser } from "@/lib/use-current-user";
 import { useMyPaintings } from "@/lib/hooks/use-api";
 import { authClient } from "@/lib/auth-client";
@@ -33,7 +39,18 @@ import {
 } from "lucide-react";
 
 // Avatar emoji options
-const avatarEmojis = ["👤", "😊", "🎨", "🌟", "🎭", "🚀", "💡", "🦄", "🌈", "⭐"];
+const avatarEmojis = [
+  "👤",
+  "😊",
+  "🎨",
+  "🌟",
+  "🎭",
+  "🚀",
+  "💡",
+  "🦄",
+  "🌈",
+  "⭐",
+];
 
 interface ProfileData {
   name: string;
@@ -59,20 +76,20 @@ export default function ProfilePage() {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [showPhotoDialog, setShowPhotoDialog] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  
+
   // Form states
   const [profileData, setProfileData] = useState<ProfileData>({
     name: "",
     email: "",
     image: "",
   });
-  
+
   const [passwordData, setPasswordData] = useState<PasswordData>({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  
+
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -196,7 +213,7 @@ export default function ProfilePage() {
     const ctx = canvas.getContext("2d");
     canvas.width = 100;
     canvas.height = 100;
-    
+
     if (ctx) {
       ctx.font = "60px serif";
       ctx.textAlign = "center";
@@ -244,7 +261,9 @@ export default function ProfilePage() {
         <Card className="p-6 text-center">
           <CardContent>
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-red-500">Failed to load profile. Please try again.</p>
+            <p className="text-red-500">
+              Failed to load profile. Please try again.
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -258,7 +277,9 @@ export default function ProfilePage() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Profile</h1>
+              <h1 className="text-3xl font-bold text-foreground mb-2">
+                Profile
+              </h1>
               <p className="text-muted-foreground">
                 Manage your account information and settings
               </p>
@@ -269,7 +290,11 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -291,12 +316,18 @@ export default function ProfilePage() {
                     <Avatar className="w-16 h-16">
                       <AvatarImage src={user.image} />
                       <AvatarFallback className="text-lg">
-                        {user.name.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                        {user.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-medium">{user.name}</p>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {user.email}
+                      </p>
                       <Badge variant="secondary" className="mt-1">
                         {user.role}
                       </Badge>
@@ -308,7 +339,9 @@ export default function ProfilePage() {
               {/* Account Status */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Account Status</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Account Status
+                  </CardTitle>
                   <Shield className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -323,7 +356,8 @@ export default function ProfilePage() {
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Member since {new Date(user.createdAt).toLocaleDateString("en-US", {
+                    Member since{" "}
+                    {new Date(user.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -335,7 +369,9 @@ export default function ProfilePage() {
               {/* Paintings Count */}
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Your Paintings</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Your Paintings
+                  </CardTitle>
                   <Palette className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -370,13 +406,20 @@ export default function ProfilePage() {
                   <Avatar className="w-24 h-24">
                     <AvatarImage src={profileData.image} />
                     <AvatarFallback className="text-xl">
-                      {profileData.name.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                      {profileData.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  
+
                   {isEditingProfile && (
                     <div className="space-y-2">
-                      <Dialog open={showPhotoDialog} onOpenChange={setShowPhotoDialog}>
+                      <Dialog
+                        open={showPhotoDialog}
+                        onOpenChange={setShowPhotoDialog}
+                      >
                         <DialogTrigger asChild>
                           <Button variant="outline">
                             <Camera className="w-4 h-4 mr-2" />
@@ -390,7 +433,10 @@ export default function ProfilePage() {
                           <div className="space-y-4">
                             {/* File Upload */}
                             <div>
-                              <Label htmlFor="photo-upload" className="text-sm font-medium">
+                              <Label
+                                htmlFor="photo-upload"
+                                className="text-sm font-medium"
+                              >
                                 Upload Photo
                               </Label>
                               <div className="mt-2">
@@ -403,12 +449,14 @@ export default function ProfilePage() {
                                 />
                               </div>
                             </div>
-                            
+
                             <Separator />
-                            
+
                             {/* Emoji Avatars */}
                             <div>
-                              <Label className="text-sm font-medium">Or choose an avatar</Label>
+                              <Label className="text-sm font-medium">
+                                Or choose an avatar
+                              </Label>
                               <div className="grid grid-cols-5 gap-2 mt-2">
                                 {avatarEmojis.map((emoji, index) => (
                                   <Button
@@ -441,7 +489,9 @@ export default function ProfilePage() {
                     <Input
                       id="name"
                       value={profileData.name}
-                      onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                      onChange={(e) =>
+                        setProfileData({ ...profileData, name: e.target.value })
+                      }
                       disabled={!isEditingProfile}
                       placeholder="Enter your full name"
                     />
@@ -502,7 +552,10 @@ export default function ProfilePage() {
                           type={showPasswords.current ? "text" : "password"}
                           value={passwordData.currentPassword}
                           onChange={(e) =>
-                            setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                            setPasswordData({
+                              ...passwordData,
+                              currentPassword: e.target.value,
+                            })
                           }
                           placeholder="Enter current password"
                           className="pl-10 pr-10"
@@ -510,7 +563,10 @@ export default function ProfilePage() {
                         <button
                           type="button"
                           onClick={() =>
-                            setShowPasswords({ ...showPasswords, current: !showPasswords.current })
+                            setShowPasswords({
+                              ...showPasswords,
+                              current: !showPasswords.current,
+                            })
                           }
                           className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                         >
@@ -533,7 +589,10 @@ export default function ProfilePage() {
                           type={showPasswords.new ? "text" : "password"}
                           value={passwordData.newPassword}
                           onChange={(e) =>
-                            setPasswordData({ ...passwordData, newPassword: e.target.value })
+                            setPasswordData({
+                              ...passwordData,
+                              newPassword: e.target.value,
+                            })
                           }
                           placeholder="Enter new password"
                           className="pl-10 pr-10"
@@ -541,7 +600,10 @@ export default function ProfilePage() {
                         <button
                           type="button"
                           onClick={() =>
-                            setShowPasswords({ ...showPasswords, new: !showPasswords.new })
+                            setShowPasswords({
+                              ...showPasswords,
+                              new: !showPasswords.new,
+                            })
                           }
                           className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                         >
@@ -556,7 +618,9 @@ export default function ProfilePage() {
 
                     {/* Confirm Password */}
                     <div>
-                      <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                      <Label htmlFor="confirmPassword">
+                        Confirm New Password
+                      </Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
@@ -564,7 +628,10 @@ export default function ProfilePage() {
                           type={showPasswords.confirm ? "text" : "password"}
                           value={passwordData.confirmPassword}
                           onChange={(e) =>
-                            setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                            setPasswordData({
+                              ...passwordData,
+                              confirmPassword: e.target.value,
+                            })
                           }
                           placeholder="Confirm new password"
                           className="pl-10 pr-10"
@@ -572,7 +639,10 @@ export default function ProfilePage() {
                         <button
                           type="button"
                           onClick={() =>
-                            setShowPasswords({ ...showPasswords, confirm: !showPasswords.confirm })
+                            setShowPasswords({
+                              ...showPasswords,
+                              confirm: !showPasswords.confirm,
+                            })
                           }
                           className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
                         >
@@ -585,7 +655,10 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <Button onClick={handlePasswordChange} disabled={isUpdating}>
+                    <Button
+                      onClick={handlePasswordChange}
+                      disabled={isUpdating}
+                    >
                       <Save className="w-4 h-4 mr-2" />
                       {isUpdating ? "Changing..." : "Change Password"}
                     </Button>
@@ -599,7 +672,8 @@ export default function ProfilePage() {
                         <div>
                           <p className="font-medium">Account Status</p>
                           <p className="text-sm text-muted-foreground">
-                            Your account is {user.isStale ? "inactive" : "active"}
+                            Your account is{" "}
+                            {user.isStale ? "inactive" : "active"}
                           </p>
                         </div>
                       </div>
@@ -615,11 +689,14 @@ export default function ProfilePage() {
                         <div>
                           <p className="font-medium">Member Since</p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(user.createdAt).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })}
+                            {new Date(user.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }
+                            )}
                           </p>
                         </div>
                       </div>
@@ -668,10 +745,7 @@ export default function ProfilePage() {
                 {userPaintings.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {userPaintings.map((painting) => (
-                      <div
-                        key={painting.id}
-                        className="group cursor-pointer"
-                      >
+                      <div key={painting.id} className="group cursor-pointer">
                         <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-2 relative">
                           <Image
                             src={painting.imageUrl}
@@ -682,7 +756,9 @@ export default function ProfilePage() {
                             unoptimized={true}
                           />
                         </div>
-                        <p className="text-sm font-medium truncate">{painting.title}</p>
+                        <p className="text-sm font-medium truncate">
+                          {painting.title}
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(painting.createdAt).toLocaleDateString()}
                         </p>
@@ -692,7 +768,9 @@ export default function ProfilePage() {
                 ) : (
                   <div className="text-center py-8">
                     <Palette className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No paintings uploaded yet</p>
+                    <p className="text-muted-foreground">
+                      No paintings uploaded yet
+                    </p>
                     <Button variant="outline" className="mt-4" asChild>
                       <a href="/paintings/my">Upload Your First Painting</a>
                     </Button>

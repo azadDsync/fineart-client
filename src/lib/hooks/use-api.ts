@@ -3,11 +3,17 @@
  * Provides optimized, reusable hooks for all API endpoints
  */
 
-'use client';
+"use client";
 
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery, type UseQueryOptions } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api-client';
-import { queryKeys } from '@/lib/query-keys';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+  type UseQueryOptions,
+} from "@tanstack/react-query";
+import { apiClient } from "@/lib/api-client";
+import { queryKeys } from "@/lib/query-keys";
 import type {
   ApiResponse,
   Painting,
@@ -33,7 +39,7 @@ import type {
   SearchPaintingsParams,
   EventAttendee,
   AlumniStatsData,
-} from '@/types/api';
+} from "@/types/api";
 
 // ============================================================================
 // PAINTINGS HOOKS
@@ -41,7 +47,10 @@ import type {
 
 export function usePaintings(
   params: SearchPaintingsParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Painting[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<Painting[]>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.paintings.list(params),
@@ -51,11 +60,18 @@ export function usePaintings(
   });
 }
 
-export function usePaintingsInfinite(params: SearchPaintingsParams = {}, pageSize = 20) {
+export function usePaintingsInfinite(
+  params: SearchPaintingsParams = {},
+  pageSize = 20
+) {
   return useInfiniteQuery({
     queryKey: queryKeys.paintings.infinite({ ...params, limit: pageSize }),
     queryFn: ({ pageParam = 1 }) =>
-      apiClient.getPaintings({ ...params, page: pageParam as number, limit: pageSize }),
+      apiClient.getPaintings({
+        ...params,
+        page: pageParam as number,
+        limit: pageSize,
+      }),
     getNextPageParam: (lastPage) => {
       const pg = lastPage.pagination;
       if (!pg) return undefined;
@@ -69,7 +85,10 @@ export function usePaintingsInfinite(params: SearchPaintingsParams = {}, pageSiz
 
 export function useMyPaintings(
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Painting[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<Painting[]>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.paintings.my(params),
@@ -81,7 +100,7 @@ export function useMyPaintings(
 
 export function usePainting(
   id: string,
-  options?: Omit<UseQueryOptions<ApiResponse<Painting>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Painting>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.paintings.detail(id),
@@ -92,27 +111,35 @@ export function usePainting(
   });
 }
 
-export function useCreatePainting(onSuccessCallback?: (data: ApiResponse<Painting>) => void) {
+export function useCreatePainting(
+  onSuccessCallback?: (data: ApiResponse<Painting>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreatePaintingData) => apiClient.createPainting(data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.paintings.lists() });
       queryClient.invalidateQueries({ queryKey: queryKeys.paintings.my() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.paintings.infinite({}) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.paintings.infinite({}),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
     },
   });
 }
 
-export function useUpdatePainting(onSuccessCallback?: (data: ApiResponse<Painting>) => void) {
+export function useUpdatePainting(
+  onSuccessCallback?: (data: ApiResponse<Painting>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdatePaintingData }) => 
+    mutationFn: ({ id, data }: { id: string; data: UpdatePaintingData }) =>
       apiClient.updatePainting(id, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.paintings.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.paintings.detail(variables.id),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.paintings.lists() });
       queryClient.invalidateQueries({ queryKey: queryKeys.paintings.my() });
       onSuccessCallback?.(data);
@@ -120,14 +147,18 @@ export function useUpdatePainting(onSuccessCallback?: (data: ApiResponse<Paintin
   });
 }
 
-export function useDeletePainting(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useDeletePainting(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.deletePainting(id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.paintings.lists() });
       queryClient.invalidateQueries({ queryKey: queryKeys.paintings.my() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.paintings.infinite({}) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.paintings.infinite({}),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
     },
@@ -140,7 +171,7 @@ export function useDeletePainting(onSuccessCallback?: (data: ApiResponse<{ messa
 
 export function useEvents(
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Event[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Event[]>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.events.list(params),
@@ -152,7 +183,7 @@ export function useEvents(
 
 export function useUpcomingEvents(
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Event[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Event[]>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.events.upcoming(params),
@@ -164,7 +195,7 @@ export function useUpcomingEvents(
 
 export function useMyEvents(
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Event[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Event[]>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.events.my(params),
@@ -176,7 +207,7 @@ export function useMyEvents(
 
 export function useEvent(
   id: string,
-  options?: Omit<UseQueryOptions<ApiResponse<Event>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Event>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.events.detail(id),
@@ -190,7 +221,10 @@ export function useEvent(
 export function useEventAttendees(
   id: string,
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<EventAttendee[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<EventAttendee[]>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.events.attendees(id, params),
@@ -201,7 +235,9 @@ export function useEventAttendees(
   });
 }
 
-export function useCreateEvent(onSuccessCallback?: (data: ApiResponse<Event>) => void) {
+export function useCreateEvent(
+  onSuccessCallback?: (data: ApiResponse<Event>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateEventData) => apiClient.createEvent(data),
@@ -214,13 +250,17 @@ export function useCreateEvent(onSuccessCallback?: (data: ApiResponse<Event>) =>
   });
 }
 
-export function useUpdateEvent(onSuccessCallback?: (data: ApiResponse<Event>) => void) {
+export function useUpdateEvent(
+  onSuccessCallback?: (data: ApiResponse<Event>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateEventData }) => 
+    mutationFn: ({ id, data }: { id: string; data: UpdateEventData }) =>
       apiClient.updateEvent(id, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.events.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.events.detail(variables.id),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.events.lists() });
       queryClient.invalidateQueries({ queryKey: queryKeys.events.upcoming() });
       onSuccessCallback?.(data);
@@ -228,7 +268,9 @@ export function useUpdateEvent(onSuccessCallback?: (data: ApiResponse<Event>) =>
   });
 }
 
-export function useDeleteEvent(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useDeleteEvent(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.deleteEvent(id),
@@ -241,27 +283,39 @@ export function useDeleteEvent(onSuccessCallback?: (data: ApiResponse<{ message:
   });
 }
 
-export function useJoinEvent(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useJoinEvent(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.joinEvent(id),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.events.detail(variables) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.events.detail(variables),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.events.my() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.events.attendees(variables) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.events.attendees(variables),
+      });
       onSuccessCallback?.(data);
     },
   });
 }
 
-export function useLeaveEvent(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useLeaveEvent(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.leaveEvent(id),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.events.detail(variables) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.events.detail(variables),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.events.my() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.events.attendees(variables) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.events.attendees(variables),
+      });
       onSuccessCallback?.(data);
     },
   });
@@ -273,7 +327,10 @@ export function useLeaveEvent(onSuccessCallback?: (data: ApiResponse<{ message: 
 
 export function useAnnouncements(
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Announcement[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<Announcement[]>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.announcements.list(params),
@@ -285,7 +342,10 @@ export function useAnnouncements(
 
 export function useMyAnnouncements(
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Announcement[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<Announcement[]>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.announcements.my(params),
@@ -297,7 +357,10 @@ export function useMyAnnouncements(
 
 export function useAnnouncement(
   id: string,
-  options?: Omit<UseQueryOptions<ApiResponse<Announcement>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<Announcement>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.announcements.detail(id),
@@ -308,12 +371,17 @@ export function useAnnouncement(
   });
 }
 
-export function useCreateAnnouncement(onSuccessCallback?: (data: ApiResponse<Announcement>) => void) {
+export function useCreateAnnouncement(
+  onSuccessCallback?: (data: ApiResponse<Announcement>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: CreateAnnouncementData) => apiClient.createAnnouncement(data),
+    mutationFn: (data: CreateAnnouncementData) =>
+      apiClient.createAnnouncement(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.announcements.lists() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.announcements.lists(),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.announcements.my() });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
@@ -321,26 +389,36 @@ export function useCreateAnnouncement(onSuccessCallback?: (data: ApiResponse<Ann
   });
 }
 
-export function useUpdateAnnouncement(onSuccessCallback?: (data: ApiResponse<Announcement>) => void) {
+export function useUpdateAnnouncement(
+  onSuccessCallback?: (data: ApiResponse<Announcement>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateAnnouncementData }) =>
       apiClient.updateAnnouncement(id, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.announcements.detail(variables.id) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.announcements.lists() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.announcements.detail(variables.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.announcements.lists(),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.announcements.my() });
       onSuccessCallback?.(data);
     },
   });
 }
 
-export function useDeleteAnnouncement(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useDeleteAnnouncement(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.deleteAnnouncement(id),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.announcements.lists() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.announcements.lists(),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.announcements.my() });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
@@ -354,7 +432,7 @@ export function useDeleteAnnouncement(onSuccessCallback?: (data: ApiResponse<{ m
 
 export function useAlumni(
   params: SearchAlumniParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Alumni[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Alumni[]>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.alumni.list(params),
@@ -367,7 +445,7 @@ export function useAlumni(
 export function useAlumniBatch(
   year: number,
   params: PaginationParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<Alumni[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Alumni[]>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.alumni.batch(year, params),
@@ -380,7 +458,7 @@ export function useAlumniBatch(
 
 export function useAlumniRecord(
   id: string,
-  options?: Omit<UseQueryOptions<ApiResponse<Alumni>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<Alumni>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.alumni.detail(id),
@@ -392,7 +470,10 @@ export function useAlumniRecord(
 }
 
 export function useAlumniStats(
-  options?: Omit<UseQueryOptions<ApiResponse<AlumniStatsData>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<AlumniStatsData>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.alumni.stats(),
@@ -402,7 +483,9 @@ export function useAlumniStats(
   });
 }
 
-export function useCreateAlumni(onSuccessCallback?: (data: ApiResponse<Alumni>) => void) {
+export function useCreateAlumni(
+  onSuccessCallback?: (data: ApiResponse<Alumni>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateAlumniData) => apiClient.createAlumni(data),
@@ -414,13 +497,17 @@ export function useCreateAlumni(onSuccessCallback?: (data: ApiResponse<Alumni>) 
   });
 }
 
-export function useUpdateAlumni(onSuccessCallback?: (data: ApiResponse<Alumni>) => void) {
+export function useUpdateAlumni(
+  onSuccessCallback?: (data: ApiResponse<Alumni>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateAlumniData }) =>
       apiClient.updateAlumni(id, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.alumni.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.alumni.detail(variables.id),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.alumni.lists() });
       queryClient.invalidateQueries({ queryKey: queryKeys.alumni.stats() });
       onSuccessCallback?.(data);
@@ -428,7 +515,9 @@ export function useUpdateAlumni(onSuccessCallback?: (data: ApiResponse<Alumni>) 
   });
 }
 
-export function useDeleteAlumni(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useDeleteAlumni(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.deleteAlumni(id),
@@ -445,7 +534,10 @@ export function useDeleteAlumni(onSuccessCallback?: (data: ApiResponse<{ message
 // ============================================================================
 
 export function useAdminStats(
-  options?: Omit<UseQueryOptions<ApiResponse<AdminStats>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<AdminStats>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.admin.stats(),
@@ -457,7 +549,7 @@ export function useAdminStats(
 
 export function useUsers(
   params: SearchUsersParams = {},
-  options?: Omit<UseQueryOptions<ApiResponse<User[]>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<ApiResponse<User[]>>, "queryKey" | "queryFn">
 ) {
   return useQuery({
     queryKey: queryKeys.admin.users.list(params),
@@ -469,7 +561,10 @@ export function useUsers(
 
 export function useUser(
   id: string,
-  options?: Omit<UseQueryOptions<ApiResponse<User & { stats: UserStats }>>, 'queryKey' | 'queryFn'>
+  options?: Omit<
+    UseQueryOptions<ApiResponse<User & { stats: UserStats }>>,
+    "queryKey" | "queryFn"
+  >
 ) {
   return useQuery({
     queryKey: queryKeys.admin.users.detail(id),
@@ -480,38 +575,52 @@ export function useUser(
   });
 }
 
-export function useUpdateUserStatus(onSuccessCallback?: (data: ApiResponse<User & { message: string }>) => void) {
+export function useUpdateUserStatus(
+  onSuccessCallback?: (data: ApiResponse<User & { message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateUserStatusData }) =>
       apiClient.updateUserStatus(id, data),
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.detail(variables.id) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.lists() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.users.detail(variables.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.users.lists(),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
     },
   });
 }
 
-export function useDeleteUser(onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void) {
+export function useDeleteUser(
+  onSuccessCallback?: (data: ApiResponse<{ message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => apiClient.deleteUser(id),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.lists() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.users.lists(),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
     },
   });
 }
 
-export function useBulkUserAction(onSuccessCallback?: (data: ApiResponse<User[] & { message: string }>) => void) {
+export function useBulkUserAction(
+  onSuccessCallback?: (data: ApiResponse<User[] & { message: string }>) => void
+) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: BulkUserActionData) => apiClient.bulkUserAction(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.admin.users.lists() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.users.lists(),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
     },

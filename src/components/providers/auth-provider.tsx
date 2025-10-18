@@ -23,7 +23,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (data?.user) {
       const u = data.user;
       const toISO = (val: string | Date | null | undefined) =>
-        !val ? new Date().toISOString() : typeof val === "string" ? val : val.toISOString();
+        !val
+          ? new Date().toISOString()
+          : typeof val === "string"
+          ? val
+          : val.toISOString();
       // safely read an optional expires value that may not exist on the typed user
       const expiresVal = (() => {
         const obj = u as Record<string, unknown>;
@@ -36,7 +40,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email: u.email,
         emailVerified: Boolean(u.emailVerified),
         image: u.image || undefined,
-        role: (u.role?.toUpperCase?.() === "ADMIN" ? "ADMIN" : "MEMBER") as "ADMIN" | "MEMBER",
+        role: (u.role?.toUpperCase?.() === "ADMIN" ? "ADMIN" : "MEMBER") as
+          | "ADMIN"
+          | "MEMBER",
         isStale: Boolean(u.isStale) || false,
         expiresAt: expiresVal ? toISO(expiresVal) : undefined,
         createdAt: toISO(u.createdAt),

@@ -1,14 +1,12 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Typecheck client",
-			"type": "shell",
-			"command": "bunx --bun tsc -p tsconfig.json --noEmit",
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "build"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Typecheck client",
+      "type": "shell",
+      "command": "bunx --bun tsc -p tsconfig.json --noEmit",
+      "problemMatcher": ["$tsc"],
+      "group": "build"
+    }
+  ]
 }

@@ -50,8 +50,15 @@ function PaintingsContent() {
 
 export default function PaintingsPage() {
   return (
-    <PageLayout title="Paintings" description="Explore works submitted by members.">
-      <Suspense fallback={<div className="p-4 text-sm text-muted-foreground">Loading...</div>}>
+    <PageLayout
+      title="Paintings"
+      description="Explore works submitted by members."
+    >
+      <Suspense
+        fallback={
+          <div className="p-4 text-sm text-muted-foreground">Loading...</div>
+        }
+      >
         <PaintingsContent />
       </Suspense>
     </PageLayout>

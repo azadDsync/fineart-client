@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -11,20 +11,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
-import { Eye, EyeOff, OctagonAlert} from "lucide-react";
+import { Eye, EyeOff, OctagonAlert } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 
 import { authClient } from "@/lib/auth-client";
 import { SignUpData, signupSchema } from "@/types/auth-schema";
 import { toast } from "sonner";
 
-
-
 const SOCIAL_PROVIDERS = [
   { provider: "google", icon: FaGoogle, label: "Sign up with Google" },
 ];
-
-
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +33,7 @@ export default function SignUpPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  // setValue, watch,
+    // setValue, watch,
     reset,
   } = useForm<SignUpData>({
     resolver: zodResolver(signupSchema),
@@ -58,13 +54,13 @@ export default function SignUpPage() {
           name: data.name,
           email: data.email,
           password: data.password,
-          callbackURL: "/profile"
+          callbackURL: "/profile",
         },
         {
           onSuccess: () => {
             reset();
-            toast.success('email verification link sent!')
-            router.push('/verify?message=email_verification_sent')
+            toast.success("email verification link sent!");
+            router.push("/verify?message=email_verification_sent");
           },
           onError: (error) => {
             const errorMessage =
@@ -88,10 +84,8 @@ export default function SignUpPage() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL:`${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
+        callbackURL: `${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
       });
-
-      
     } catch (error) {
       console.log(error);
       setServerError(`Failed to sign in with ${provider}. Please try again.`);
@@ -103,8 +97,8 @@ export default function SignUpPage() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4">
-    <div className="mx-auto grid w-[350px] gap-6 border-2 rounded-lg p-6 border-black shadow-[8px_8px_0px_#000] panel-fill">
-      <div className="grid gap-2 text-center">
+      <div className="mx-auto grid w-[350px] gap-6 border-2 rounded-lg p-6 border-black shadow-[8px_8px_0px_#000] panel-fill">
+        <div className="grid gap-2 text-center">
           <h1 className="text-3xl font-bold">Sign Up</h1>
           <p className="text-balance text-muted-foreground">
             Enter your information to create an account
@@ -118,10 +112,12 @@ export default function SignUpPage() {
               placeholder="Max Robinson"
               required
               disabled={isFormDisabled}
-               {...register("name")}
-               className="input-fill"
+              {...register("name")}
+              className="input-fill"
             />
-            {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-sm text-red-600">{errors.name.message}</p>
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
@@ -131,10 +127,12 @@ export default function SignUpPage() {
               placeholder="m@example.com"
               required
               disabled={isFormDisabled}
-               {...register("email")}
-               className="input-fill"
+              {...register("email")}
+              className="input-fill"
             />
-            {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-sm text-red-600">{errors.email.message}</p>
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
@@ -144,18 +142,24 @@ export default function SignUpPage() {
                 type={showPassword ? "text" : "password"}
                 required
                 disabled={isFormDisabled}
-                 {...register("password")}
-                 className="input-fill"
+                {...register("password")}
+                className="input-fill"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
-            {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password.message}</p>
+            )}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -165,18 +169,26 @@ export default function SignUpPage() {
                 type={showConfirmPassword ? "text" : "password"}
                 required
                 disabled={isFormDisabled}
-                 {...register("confirmPassword")}
-                 className="input-fill"
+                {...register("confirmPassword")}
+                className="input-fill"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showConfirmPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
-            {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && (
+              <p className="text-sm text-red-600">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
           {serverError && (
             <Alert variant="destructive" className="bg-destructive/10">

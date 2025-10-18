@@ -12,8 +12,8 @@ This README covers the project overview, local setup, development commands, and 
 - Getting started (dev & build)
 - Environment & configuration
 - Contributing (branching, commits, PRs, code style, tests)
-## Project overview
 
+## Project overview
 
 ### Cloudinary setup
 
@@ -36,7 +36,7 @@ The frontend lives in this repository and communicates with a separate backend (
 ## Features
 
 - Public landing and announcements pages
-- Event listings 
+- Event listings
 - Paintings gallery with user uploads and personal collections
 - Authentication flow (sign in/up, password reset, email verification)
 - Admin and user dashboards with role-based access
@@ -113,51 +113,51 @@ npm test
 
 Thank you for contributing — we welcome fixes, features, and docs improvements. The steps below explain the workflow we prefer.
 
-1) Open an issue first
+1. Open an issue first
 
    - If it's a bug, include reproduction steps and any console/network errors.
    - If it's a feature, include use cases and proposed UI changes.
 
-2) Branching
+2. Branching
 
    - Base off `main`.
    - Branch name format: `type/short-description` where `type` is one of `fix`, `feat`, `chore`, `docs`, `refactor`.
      - Example: `feat/gallery-infinite-scroll` or `fix/signin-redirect`
 
-3) Commits
+3. Commits
 
    - Use clear, present-tense messages.
    - Recommended format: `<type>(<scope>): short description`
      - types: feat, fix, docs, style, refactor, test, chore
      - example: `feat(auth): add email verification flow`
 
-4) Pull requests
+4. Pull requests
 
    - Open a PR against `main` with a clear description and screenshots when applicable.
    - Include testing steps and any migrations or backend changes required.
    - Add relevant labels and reviewers.
 
-5) Code style
+5. Code style
 
    - Follow existing TypeScript and React patterns in the project.
    - Run linters and formatters before submitting: `npm run lint` and `npm run format`.
    - Keep component logic small and prefer extracting hooks for complex logic.
 
-6) Testing  ( You can skip this for now ...)
+6. Testing ( You can skip this for now ...)
 
    - Add unit tests for new logic and integration tests for key flows when possible.
    - If you add a new UI page or component, include a simple test that mounts it and checks for expected output.
 
-7) Accessibility & performance
+7. Accessibility & performance
 
    - Use semantic HTML and proper ARIA attributes for interactive controls.
    - Keep images optimized and use Next.js Image where helpful.
 
-8) Updating docs
+8. Updating docs
 
    - If your change affects setup, environment variables, or deployment, update this README and xyz.md in documentation folder.
 
-9) Ownership & follow-ups
+9. Ownership & follow-ups
 
    - After the PR is merged, update any related issues and notify maintainers if a follow-up is required.
 
@@ -169,7 +169,6 @@ Be respectful and constructive. Report abusive behavior to the maintainers. We a
 
 - If you get CORS or auth errors, confirm `NEXT_PUBLIC_API_URL` points to a running backend and your session cookies/tokens are set.
 - For build failures, run `npm run build` locally and fix lint/type errors reported by TypeScript.
-
 
 ## Acknowledgements
 

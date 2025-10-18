@@ -23,10 +23,11 @@ import type {
   SearchAlumniParams,
   SearchPaintingsParams,
   EventAttendee,
-  AlumniStatsData
-} from '@/types/api';
+  AlumniStatsData,
+} from "@/types/api";
 
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:8787/api';
+const API_BASE_URL =
+  `${process.env.NEXT_PUBLIC_API_URL}/api` || "http://localhost:8787/api";
 
 class ApiClient {
   private async request<T>(
@@ -36,7 +37,7 @@ class ApiClient {
     // We rely on HTTP-only cookies set by Better Auth; no need to fetch session here.
     // (Intentionally avoiding authClient.getSession() in client-side code.)
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(options.headers as Record<string, string>),
     };
 
@@ -45,21 +46,30 @@ class ApiClient {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers,
-      credentials: 'include',
+      credentials: "include",
     });
 
     if (!response.ok) {
       type MaybeErr = Partial<ApiError> & { message?: string };
-      let parsed: MaybeErr = { error: 'Network error', status: response.status };
+      let parsed: MaybeErr = {
+        error: "Network error",
+        status: response.status,
+      };
       try {
         parsed = await response.json();
       } catch {
         // keep default parsed
       }
-      const message = typeof parsed.error === 'string'
-        ? parsed.error
-        : (typeof parsed.message === 'string' ? parsed.message : 'Request failed');
-      const err = new Error(message) as Error & { status?: number; code?: string };
+      const message =
+        typeof parsed.error === "string"
+          ? parsed.error
+          : typeof parsed.message === "string"
+          ? parsed.message
+          : "Request failed";
+      const err = new Error(message) as Error & {
+        status?: number;
+        code?: string;
+      };
       err.status = parsed.status ?? response.status;
       err.code = parsed.code;
       throw err;
@@ -69,23 +79,36 @@ class ApiClient {
   }
 
   private buildQueryString(
-    params: PaginationParams | SearchUsersParams | SearchAlumniParams | Record<string, unknown>
+    params:
+      | PaginationParams
+      | SearchUsersParams
+      | SearchAlumniParams
+      | Record<string, unknown>
   ): string {
     const filteredParams = Object.entries(params)
-      .filter(([, value]) => value !== undefined && value !== null && value !== '')
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
-      .join('&');
-    
-    return filteredParams ? `?${filteredParams}` : '';
+      .filter(
+        ([, value]) => value !== undefined && value !== null && value !== ""
+      )
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+      )
+      .join("&");
+
+    return filteredParams ? `?${filteredParams}` : "";
   }
 
   // Paintings API
-  async getPaintings(params: SearchPaintingsParams = {}): Promise<ApiResponse<Painting[]>> {
+  async getPaintings(
+    params: SearchPaintingsParams = {}
+  ): Promise<ApiResponse<Painting[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/paintings${queryString}`);
   }
 
-  async getMyPaintings(params: PaginationParams = {}): Promise<ApiResponse<Painting[]>> {
+  async getMyPaintings(
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Painting[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/paintings/my${queryString}`);
   }
@@ -94,38 +117,49 @@ class ApiClient {
     return this.request(`/paintings/${id}`);
   }
 
-  async createPainting(data: CreatePaintingData): Promise<ApiResponse<Painting>> {
-    return this.request('/paintings', {
-      method: 'POST',
+  async createPainting(
+    data: CreatePaintingData
+  ): Promise<ApiResponse<Painting>> {
+    return this.request("/paintings", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  async updatePainting(id: string, data: UpdatePaintingData): Promise<ApiResponse<Painting>> {
+  async updatePainting(
+    id: string,
+    data: UpdatePaintingData
+  ): Promise<ApiResponse<Painting>> {
     return this.request(`/paintings/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async deletePainting(id: string): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/paintings/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   // Events API (changed to /programs to avoid ad blocker issues)
-  async getEvents(params: PaginationParams = {}): Promise<ApiResponse<Event[]>> {
+  async getEvents(
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Event[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/programs${queryString}`);
   }
 
-  async getUpcomingEvents(params: PaginationParams = {}): Promise<ApiResponse<Event[]>> {
+  async getUpcomingEvents(
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Event[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/programs/upcoming${queryString}`);
   }
 
-  async getMyEvents(params: PaginationParams = {}): Promise<ApiResponse<Event[]>> {
+  async getMyEvents(
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Event[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/programs/my${queryString}`);
   }
@@ -135,49 +169,59 @@ class ApiClient {
   }
 
   async createEvent(data: CreateEventData): Promise<ApiResponse<Event>> {
-    return this.request('/programs', {
-      method: 'POST',
+    return this.request("/programs", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  async updateEvent(id: string, data: UpdateEventData): Promise<ApiResponse<Event>> {
+  async updateEvent(
+    id: string,
+    data: UpdateEventData
+  ): Promise<ApiResponse<Event>> {
     return this.request(`/programs/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async deleteEvent(id: string): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/programs/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async joinEvent(id: string): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/programs/${id}/join`, {
-      method: 'POST',
+      method: "POST",
     });
   }
 
   async leaveEvent(id: string): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/programs/${id}/leave`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
-  async getEventAttendees(id: string, params: PaginationParams = {}): Promise<ApiResponse<EventAttendee[]>> {
+  async getEventAttendees(
+    id: string,
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<EventAttendee[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/programs/${id}/attendees${queryString}`);
   }
 
   // Announcements API
-  async getAnnouncements(params: PaginationParams = {}): Promise<ApiResponse<Announcement[]>> {
+  async getAnnouncements(
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Announcement[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/announcements${queryString}`);
   }
 
-  async getMyAnnouncements(params: PaginationParams = {}): Promise<ApiResponse<Announcement[]>> {
+  async getMyAnnouncements(
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Announcement[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/announcements/my${queryString}`);
   }
@@ -186,33 +230,45 @@ class ApiClient {
     return this.request(`/announcements/${id}`);
   }
 
-  async createAnnouncement(data: CreateAnnouncementData): Promise<ApiResponse<Announcement>> {
-    return this.request('/announcements', {
-      method: 'POST',
+  async createAnnouncement(
+    data: CreateAnnouncementData
+  ): Promise<ApiResponse<Announcement>> {
+    return this.request("/announcements", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  async updateAnnouncement(id: string, data: UpdateAnnouncementData): Promise<ApiResponse<Announcement>> {
+  async updateAnnouncement(
+    id: string,
+    data: UpdateAnnouncementData
+  ): Promise<ApiResponse<Announcement>> {
     return this.request(`/announcements/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
-  async deleteAnnouncement(id: string): Promise<ApiResponse<{ message: string }>> {
+  async deleteAnnouncement(
+    id: string
+  ): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/announcements/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   // Alumni API
-  async getAlumni(params: SearchAlumniParams = {}): Promise<ApiResponse<Alumni[]>> {
+  async getAlumni(
+    params: SearchAlumniParams = {}
+  ): Promise<ApiResponse<Alumni[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/alumni${queryString}`);
   }
 
-  async getAlumniByBatch(year: number, params: PaginationParams = {}): Promise<ApiResponse<Alumni[]>> {
+  async getAlumniByBatch(
+    year: number,
+    params: PaginationParams = {}
+  ): Promise<ApiResponse<Alumni[]>> {
     const queryString = this.buildQueryString(params);
     return this.request(`/alumni/batch/${year}${queryString}`);
   }
@@ -222,27 +278,30 @@ class ApiClient {
   }
 
   async createAlumni(data: CreateAlumniData): Promise<ApiResponse<Alumni>> {
-    return this.request('/alumni', {
-      method: 'POST',
+    return this.request("/alumni", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
-  async updateAlumni(id: string, data: UpdateAlumniData): Promise<ApiResponse<Alumni>> {
+  async updateAlumni(
+    id: string,
+    data: UpdateAlumniData
+  ): Promise<ApiResponse<Alumni>> {
     return this.request(`/alumni/${id}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async deleteAlumni(id: string): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/alumni/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async getAlumniStats(): Promise<ApiResponse<AlumniStatsData>> {
-    return this.request('/alumni/stats/overview');
+    return this.request("/alumni/stats/overview");
   }
 
   // Admin API
@@ -255,33 +314,40 @@ class ApiClient {
     return this.request(`/admin/users/${id}`);
   }
 
-  async updateUserStatus(id: string, data: UpdateUserStatusData): Promise<ApiResponse<User & { message: string }>> {
+  async updateUserStatus(
+    id: string,
+    data: UpdateUserStatusData
+  ): Promise<ApiResponse<User & { message: string }>> {
     return this.request(`/admin/users/${id}/status`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
   async deleteUser(id: string): Promise<ApiResponse<{ message: string }>> {
     return this.request(`/admin/users/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async getAdminStats(): Promise<ApiResponse<AdminStats>> {
-    return this.request('/admin/stats');
+    return this.request("/admin/stats");
   }
 
-  async bulkUserAction(data: BulkUserActionData): Promise<ApiResponse<User[] & { message: string }>> {
-    return this.request('/admin/users/bulk', {
-      method: 'POST',
+  async bulkUserAction(
+    data: BulkUserActionData
+  ): Promise<ApiResponse<User[] & { message: string }>> {
+    return this.request("/admin/users/bulk", {
+      method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   // Health check
   async getHealth(): Promise<{ status: string; timestamp: string }> {
-    return fetch(`${API_BASE_URL.replace('/api', '')}/health`).then(res => res.json());
+    return fetch(`${API_BASE_URL.replace("/api", "")}/health`).then((res) =>
+      res.json()
+    );
   }
 }
 

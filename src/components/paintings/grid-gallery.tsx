@@ -57,12 +57,15 @@ export const GridGallery: React.FC<GridGalleryProps> = ({
         </div>
         <div className="p-3 h-[30%] flex flex-col justify-between">
           <div>
-            <h3 className="font-serif text-base leading-snug line-clamp-2">{card.title}</h3>
+            <h3 className="font-serif text-base leading-snug line-clamp-2">
+              {card.title}
+            </h3>
             {card.subtitle && (
-              <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{card.subtitle}</p>
+              <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+                {card.subtitle}
+              </p>
             )}
           </div>
-          
         </div>
       </div>
     ));

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Image from "next/image";
 import { usePaintingsInfinite } from "@/lib/hooks/use-api";
 import { LoadingSpinner } from "@/components/ui/loading";
@@ -31,7 +37,11 @@ interface PaintingsGridInfiniteProps {
   search?: string;
 }
 
-export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pageSize = 20, className, search }) => {
+export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({
+  pageSize = 20,
+  className,
+  search,
+}) => {
   const {
     data,
     isLoading,
@@ -42,19 +52,25 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
     refetch,
   } = usePaintingsInfinite({ search }, pageSize);
 
-  const items = useMemo(() => (data?.pages ?? []).flatMap((p) => p.data), [data]);
+  const items = useMemo(
+    () => (data?.pages ?? []).flatMap((p) => p.data),
+    [data]
+  );
 
   // Intersection observer for infinite scroll
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-    const obs = new IntersectionObserver((entries) => {
-      const first = entries[0];
-      if (first.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        void fetchNextPage();
-      }
-    }, { rootMargin: "600px" });
+    const obs = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          void fetchNextPage();
+        }
+      },
+      { rootMargin: "600px" }
+    );
     obs.observe(el);
     return () => obs.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
@@ -63,7 +79,9 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
   const closeLightbox = useCallback(() => setLightboxIdx(null), []);
   const showPrev = useCallback(() => {
-    setLightboxIdx((idx) => (idx === null ? null : (idx + items.length - 1) % items.length));
+    setLightboxIdx((idx) =>
+      idx === null ? null : (idx + items.length - 1) % items.length
+    );
   }, [items.length]);
   const showNext = useCallback(() => {
     setLightboxIdx((idx) => (idx === null ? null : (idx + 1) % items.length));
@@ -84,14 +102,21 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
     <div className={clsx("w-full", className)}>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && items.length === 0 && (
-          <div className="col-span-full flex items-center gap-2 text-sm text-muted-foreground"><LoadingSpinner /> Loading…</div>
+          <div className="col-span-full flex items-center gap-2 text-sm text-muted-foreground">
+            <LoadingSpinner /> Loading…
+          </div>
         )}
         {error && items.length === 0 && (
-          <div className="col-span-full rounded-md border border-red-500/30 bg-red-500/10 p-2 text-sm text-red-600 dark:text-red-400">Failed to load paintings</div>
+          <div className="col-span-full rounded-md border border-red-500/30 bg-red-500/10 p-2 text-sm text-red-600 dark:text-red-400">
+            Failed to load paintings
+          </div>
         )}
 
         {items.map((p, idx) => (
-          <div key={p.id} className="group relative rounded-xl border  overflow-hidden border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[8px_8px_0px_#000]">
+          <div
+            key={p.id}
+            className="group relative rounded-xl border  overflow-hidden border-black dark:border-neutral-700/40 bg-neutral-50 dark:bg-neutral-900 shadow-[8px_8px_0px_#000]"
+          >
             <button
               type="button"
               onClick={() => setLightboxIdx(idx)}
@@ -109,10 +134,18 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
                 />
               </div>
               <div className="p-4 flex-1 flex flex-col">
-                <h3 className="font-medium text-sm leading-snug line-clamp-1">{p.title}</h3>
-                {p.user?.name && <p className="mt-1 text-xs text-muted-foreground line-clamp-1">{p.user.name}</p>}
+                <h3 className="font-medium text-sm leading-snug line-clamp-1">
+                  {p.title}
+                </h3>
+                {p.user?.name && (
+                  <p className="mt-1 text-xs text-muted-foreground line-clamp-1">
+                    {p.user.name}
+                  </p>
+                )}
                 {p.description && (
-                  <span className="mt-3 inline-block text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400 line-clamp-1">{p.description}</span>
+                  <span className="mt-3 inline-block text-[11px] uppercase tracking-wide text-neutral-500 dark:text-neutral-400 line-clamp-1">
+                    {p.description}
+                  </span>
                 )}
               </div>
             </button>
@@ -124,25 +157,61 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
       </div>
 
       <div className="mt-4 flex items-center justify-center gap-3">
-        {isFetchingNextPage && <div className="flex items-center gap-2 text-sm text-muted-foreground"><LoadingSpinner /> Loading more…</div>}
+        {isFetchingNextPage && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <LoadingSpinner /> Loading more…
+          </div>
+        )}
         {!isLoading && !isFetchingNextPage && hasNextPage && (
-          <button className="text-xs px-3 py-1.5 rounded-md border bg-background hover:bg-accent/10 transition" onClick={() => fetchNextPage()}>Load more</button>
+          <button
+            className="text-xs px-3 py-1.5 rounded-md border bg-background hover:bg-accent/10 transition"
+            onClick={() => fetchNextPage()}
+          >
+            Load more
+          </button>
         )}
         {error && items.length > 0 && (
-          <button className="text-xs px-3 py-1.5 rounded-md border bg-background hover:bg-accent/10 transition" onClick={() => refetch()}>Retry</button>
+          <button
+            className="text-xs px-3 py-1.5 rounded-md border bg-background hover:bg-accent/10 transition"
+            onClick={() => refetch()}
+          >
+            Retry
+          </button>
         )}
       </div>
 
       {/* Lightbox */}
       {lightboxIdx !== null && items[lightboxIdx] && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center">
-          <button aria-label="Close" onClick={closeLightbox} className="absolute top-4 right-4 text-white/80 hover:text-white text-xl">✕</button>
-          <button aria-label="Previous" onClick={showPrev} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white text-2xl">‹</button>
-          <button aria-label="Next" onClick={showNext} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white text-2xl">›</button>
+          <button
+            aria-label="Close"
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 text-white/80 hover:text-white text-xl"
+          >
+            ✕
+          </button>
+          <button
+            aria-label="Previous"
+            onClick={showPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white text-2xl"
+          >
+            ‹
+          </button>
+          <button
+            aria-label="Next"
+            onClick={showNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white text-2xl"
+          >
+            ›
+          </button>
           <div className="relative w-[90vw] max-w-5xl aspect-[4/3]">
             <Image
               src={items[lightboxIdx].imageUrl}
-              alt={`${items[lightboxIdx].title}${items[lightboxIdx].user?.name ? ` by ${items[lightboxIdx].user.name}` : ""}`}
+              alt={`${items[lightboxIdx].title}${
+                items[lightboxIdx].user?.name
+                  ? ` by ${items[lightboxIdx].user.name}`
+                  : ""
+              }`}
               fill
               className="object-contain"
               sizes="(max-width: 1024px) 90vw, 1000px"
@@ -150,8 +219,14 @@ export const PaintingsGridInfinite: React.FC<PaintingsGridInfiniteProps> = ({ pa
             />
           </div>
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center text-white/90">
-            <div className="text-sm font-medium">{items[lightboxIdx].title}</div>
-            {items[lightboxIdx].user?.name && <div className="text-xs opacity-80">{items[lightboxIdx].user.name}</div>}
+            <div className="text-sm font-medium">
+              {items[lightboxIdx].title}
+            </div>
+            {items[lightboxIdx].user?.name && (
+              <div className="text-xs opacity-80">
+                {items[lightboxIdx].user.name}
+              </div>
+            )}
           </div>
         </div>
       )}

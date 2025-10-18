@@ -1,5 +1,5 @@
-import { PageLayout } from '@/components/layout/page-layout';
-import AlumniList from '@/components/alumni/alumni-list';
+import { PageLayout } from "@/components/layout/page-layout";
+import AlumniList from "@/components/alumni/alumni-list";
 
 export default function AlumniPage() {
   return (

@@ -24,16 +24,16 @@ export default function RootLayout({
       <body className={`antialiased`}>
         <ErrorBoundary>
           <AuthProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <QueryProvider>
-              <AppLayout>{children}</AppLayout>
-            </QueryProvider>
-          </ThemeProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <QueryProvider>
+                <AppLayout>{children}</AppLayout>
+              </QueryProvider>
+            </ThemeProvider>
           </AuthProvider>
         </ErrorBoundary>
       </body>

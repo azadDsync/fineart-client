@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { LockKeyholeIcon } from "lucide-react";
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,10 +26,10 @@ const schema = z
 
 type ResetPasswordForm = z.infer<typeof schema>;
 
-interface PageProps{
-  token:string
+interface PageProps {
+  token: string;
 }
-export default function ResetPasswordForm({token}:PageProps) {
+export default function ResetPasswordForm({ token }: PageProps) {
   const router = useRouter();
   const [tokenValid, setTokenValid] = useState<boolean | null>(null);
 
@@ -46,39 +41,31 @@ export default function ResetPasswordForm({token}:PageProps) {
     resolver: zodResolver(schema),
   });
 
- 
-
   const onSubmit = async (data: ResetPasswordForm) => {
     if (!token) return;
 
     try {
-      
-      if (data.confirmPassword!==data.password) {
-        toast.error('Password not matched!')
+      if (data.confirmPassword !== data.password) {
+        toast.error("Password not matched!");
         return;
       }
 
       await authClient.resetPassword({
-        newPassword:data.password,
+        newPassword: data.password,
         token,
-        fetchOptions:{
-          onRequest:()=>{
-
-          },
-          onResponse:()=>{
-
-          },
-          onError:(ctx)=>{
-            toast.error(ctx.error.message)
+        fetchOptions: {
+          onRequest: () => {},
+          onResponse: () => {},
+          onError: (ctx) => {
+            toast.error(ctx.error.message);
             setTokenValid(false);
           },
-          onSuccess:()=>{
-            toast.success("Password reset successful!")
+          onSuccess: () => {
+            toast.success("Password reset successful!");
             router.push("/sign-in");
-          }
-        }
-      })
-      
+          },
+        },
+      });
     } catch {
       toast.error("Something went wrong. Try again.");
     }

@@ -1,7 +1,18 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useAlumni, useAlumniStats, useCreateAlumni, useUpdateAlumni, useDeleteAlumni } from "@/lib/hooks/use-api";
-import type { Alumni, SearchAlumniParams, CreateAlumniData, UpdateAlumniData } from "@/types/api";
+import {
+  useAlumni,
+  useAlumniStats,
+  useCreateAlumni,
+  useUpdateAlumni,
+  useDeleteAlumni,
+} from "@/lib/hooks/use-api";
+import type {
+  Alumni,
+  SearchAlumniParams,
+  CreateAlumniData,
+  UpdateAlumniData,
+} from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,10 +30,10 @@ export default function AdminAlumniPage() {
   const [batchYear, setBatchYear] = useState<string>("");
 
   const [editing, setEditing] = useState<Alumni | null>(null);
-  const [form, setForm] = useState({ 
-    name: "", 
-    email: "", 
-    batchYear: "", 
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    batchYear: "",
     details: "",
     imageUrl: "",
     website: "",
@@ -47,17 +58,31 @@ export default function AdminAlumniPage() {
         github: editing.github || "",
       });
     } else {
-      setForm({ name: "", email: "", batchYear: "", details: "", imageUrl: "", website: "", linkedin: "", twitter: "", instagram: "", github: "" });
+      setForm({
+        name: "",
+        email: "",
+        batchYear: "",
+        details: "",
+        imageUrl: "",
+        website: "",
+        linkedin: "",
+        twitter: "",
+        instagram: "",
+        github: "",
+      });
     }
   }, [editing]);
 
-  const queryParams = useMemo<SearchAlumniParams>(() => ({
-    page,
-    limit,
-    ...(name ? { name } : {}),
-    ...(email ? { email } : {}),
-    ...(batchYear ? { batchYear: Number(batchYear) } : {}),
-  }), [page, name, email, batchYear]);
+  const queryParams = useMemo<SearchAlumniParams>(
+    () => ({
+      page,
+      limit,
+      ...(name ? { name } : {}),
+      ...(email ? { email } : {}),
+      ...(batchYear ? { batchYear: Number(batchYear) } : {}),
+    }),
+    [page, name, email, batchYear]
+  );
 
   const alumni = useAlumni(queryParams, {
     placeholderData: (prev) => prev,
@@ -91,15 +116,18 @@ export default function AdminAlumniPage() {
       instagram: form.instagram.trim() || undefined,
       github: form.github.trim() || undefined,
     };
-    
+
     if (editing) {
       const payload: UpdateAlumniData = {
         name: form.name.trim() || undefined,
         ...common,
       };
-      updateAlumni.mutate({ id: editing.id, data: payload }, {
-        onError: (e) => toast.error(getErrorMessage(e, "Update failed")),
-      });
+      updateAlumni.mutate(
+        { id: editing.id, data: payload },
+        {
+          onError: (e) => toast.error(getErrorMessage(e, "Update failed")),
+        }
+      );
     } else {
       const payload: CreateAlumniData = {
         name: form.name.trim(),
@@ -136,7 +164,10 @@ export default function AdminAlumniPage() {
               <Input
                 placeholder="Filter by name"
                 value={name}
-                onChange={(e) => { setName(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setPage(1);
+                }}
               />
             </div>
             <div className="space-y-1">
@@ -144,23 +175,42 @@ export default function AdminAlumniPage() {
               <Input
                 placeholder="Filter by email"
                 value={email}
-                onChange={(e) => { setEmail(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setPage(1);
+                }}
                 type="email"
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs text-muted-foreground">Batch year</label>
+              <label className="text-xs text-muted-foreground">
+                Batch year
+              </label>
               <Input
                 placeholder="e.g. 2020"
                 value={batchYear}
-                onChange={(e) => { setBatchYear(e.target.value); setPage(1); }}
+                onChange={(e) => {
+                  setBatchYear(e.target.value);
+                  setPage(1);
+                }}
                 inputMode="numeric"
                 type="number"
               />
             </div>
             <div className="flex gap-2 sm:justify-start lg:justify-end">
-              <Button variant="outline" onClick={clearFilters} disabled={alumni.isFetching}>Clear</Button>
-              <Button onClick={() => alumni.refetch()} disabled={alumni.isFetching}>Refresh</Button>
+              <Button
+                variant="outline"
+                onClick={clearFilters}
+                disabled={alumni.isFetching}
+              >
+                Clear
+              </Button>
+              <Button
+                onClick={() => alumni.refetch()}
+                disabled={alumni.isFetching}
+              >
+                Refresh
+              </Button>
             </div>
           </div>
 
@@ -169,76 +219,165 @@ export default function AdminAlumniPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-md border p-3">
               <div className="text-xs text-muted-foreground">Total alumni</div>
-              <div className="text-2xl font-semibold">{
-                typeof stats.data?.data?.totalAlumni === 'number' ? stats.data?.data?.totalAlumni as number : '—'
-              }</div>
+              <div className="text-2xl font-semibold">
+                {typeof stats.data?.data?.totalAlumni === "number"
+                  ? (stats.data?.data?.totalAlumni as number)
+                  : "—"}
+              </div>
             </div>
             <div className="rounded-md border p-3">
               <div className="text-xs text-muted-foreground">Recent (30d)</div>
-              <div className="text-2xl font-semibold">{
-                typeof stats.data?.data?.recentAdditions === 'number' ? stats.data?.data?.recentAdditions as number : '—'
-              }</div>
+              <div className="text-2xl font-semibold">
+                {typeof stats.data?.data?.recentAdditions === "number"
+                  ? (stats.data?.data?.recentAdditions as number)
+                  : "—"}
+              </div>
             </div>
             <div className="rounded-md border p-3">
-              <div className="text-xs text-muted-foreground">Batches tracked</div>
-              <div className="text-2xl font-semibold">{stats.data ? Object.keys(stats.data.data?.alumniByBatch || {}).length : "—"}</div>
+              <div className="text-xs text-muted-foreground">
+                Batches tracked
+              </div>
+              <div className="text-2xl font-semibold">
+                {stats.data
+                  ? Object.keys(stats.data.data?.alumniByBatch || {}).length
+                  : "—"}
+              </div>
             </div>
           </div>
 
           <div className="rounded-md border p-4 bg-muted/10">
-            <div className="font-medium mb-3">{editing ? "Edit alumni" : "Add alumni"}</div>
+            <div className="font-medium mb-3">
+              {editing ? "Edit alumni" : "Add alumni"}
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Name *</label>
-                <Input placeholder="Full name" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
+                <Input
+                  placeholder="Full name"
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, name: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Email</label>
-                <Input placeholder="email@example.com" type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                <Input
+                  placeholder="email@example.com"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Batch year</label>
-                <Input placeholder="e.g. 2020" inputMode="numeric" type="number" value={form.batchYear} onChange={(e) => setForm((f) => ({ ...f, batchYear: e.target.value }))} />
+                <label className="text-xs text-muted-foreground">
+                  Batch year
+                </label>
+                <Input
+                  placeholder="e.g. 2020"
+                  inputMode="numeric"
+                  type="number"
+                  value={form.batchYear}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, batchYear: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1 md:col-span-2 lg:col-span-3">
                 <label className="text-xs text-muted-foreground">Details</label>
-                <Input placeholder="Short bio or details" value={form.details} onChange={(e) => setForm((f) => ({ ...f, details: e.target.value }))} />
+                <Input
+                  placeholder="Short bio or details"
+                  value={form.details}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, details: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Image URL</label>
-                <Input placeholder="https://..." value={form.imageUrl} onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))} />
+                <label className="text-xs text-muted-foreground">
+                  Image URL
+                </label>
+                <Input
+                  placeholder="https://..."
+                  value={form.imageUrl}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, imageUrl: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">Website</label>
-                <Input placeholder="https://..." value={form.website} onChange={(e) => setForm((f) => ({ ...f, website: e.target.value }))} />
+                <Input
+                  placeholder="https://..."
+                  value={form.website}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, website: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">LinkedIn</label>
-                <Input placeholder="https://linkedin.com/in/..." value={form.linkedin} onChange={(e) => setForm((f) => ({ ...f, linkedin: e.target.value }))} />
+                <label className="text-xs text-muted-foreground">
+                  LinkedIn
+                </label>
+                <Input
+                  placeholder="https://linkedin.com/in/..."
+                  value={form.linkedin}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, linkedin: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Twitter/X</label>
-                <Input placeholder="https://x.com/..." value={form.twitter} onChange={(e) => setForm((f) => ({ ...f, twitter: e.target.value }))} />
+                <label className="text-xs text-muted-foreground">
+                  Twitter/X
+                </label>
+                <Input
+                  placeholder="https://x.com/..."
+                  value={form.twitter}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, twitter: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">Instagram</label>
-                <Input placeholder="https://instagram.com/..." value={form.instagram} onChange={(e) => setForm((f) => ({ ...f, instagram: e.target.value }))} />
+                <label className="text-xs text-muted-foreground">
+                  Instagram
+                </label>
+                <Input
+                  placeholder="https://instagram.com/..."
+                  value={form.instagram}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, instagram: e.target.value }))
+                  }
+                />
               </div>
               <div className="space-y-1">
                 <label className="text-xs text-muted-foreground">GitHub</label>
-                <Input placeholder="https://github.com/..." value={form.github} onChange={(e) => setForm((f) => ({ ...f, github: e.target.value }))} />
+                <Input
+                  placeholder="https://github.com/..."
+                  value={form.github}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, github: e.target.value }))
+                  }
+                />
               </div>
               <div className="md:col-span-2 lg:col-span-3 flex gap-2 pt-1">
-                <Button 
-                  onClick={handleSubmit} 
-                  disabled={!form.name.trim() || createAlumni.isPending || updateAlumni.isPending}
+                <Button
+                  onClick={handleSubmit}
+                  disabled={
+                    !form.name.trim() ||
+                    createAlumni.isPending ||
+                    updateAlumni.isPending
+                  }
                 >
                   {editing ? "Update" : "Add"}
                 </Button>
                 {editing && (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setEditing(null)} 
+                  <Button
+                    variant="outline"
+                    onClick={() => setEditing(null)}
                     disabled={createAlumni.isPending || updateAlumni.isPending}
                   >
                     Cancel
@@ -263,16 +402,29 @@ export default function AdminAlumniPage() {
                   <tr key={a.id} className="border-b">
                     <td className="py-2 pr-2 align-middle">{a.name}</td>
                     <td className="py-2 pr-2 align-middle">{a.email || "—"}</td>
-                    <td className="py-2 pr-2 align-middle">{a.batchYear || "—"}</td>
+                    <td className="py-2 pr-2 align-middle">
+                      {a.batchYear || "—"}
+                    </td>
                     <td className="py-2 pr-2">
                       <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="outline" onClick={() => setEditing(a)}>Edit</Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive" 
-                          onClick={() => deleteAlumni.mutate(a.id, {
-                            onError: (e) => toast.error(getErrorMessage(e, "Delete failed")),
-                          })} 
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditing(a)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() =>
+                            deleteAlumni.mutate(a.id, {
+                              onError: (e) =>
+                                toast.error(
+                                  getErrorMessage(e, "Delete failed")
+                                ),
+                            })
+                          }
                           disabled={deleteAlumni.isPending}
                         >
                           Delete
@@ -281,15 +433,25 @@ export default function AdminAlumniPage() {
                     </td>
                   </tr>
                 ))}
-                {!alumni.isLoading && (!alumni.data?.data || alumni.data.data.length === 0) && (
-                  <tr>
-                    <td colSpan={4} className="py-6 text-center text-muted-foreground">No alumni found</td>
-                  </tr>
-                )}
+                {!alumni.isLoading &&
+                  (!alumni.data?.data || alumni.data.data.length === 0) && (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="py-6 text-center text-muted-foreground"
+                      >
+                        No alumni found
+                      </td>
+                    </tr>
+                  )}
               </tbody>
             </table>
             {alumni.isLoading && <div className="py-3 text-sm">Loading…</div>}
-            {alumni.error && <div className="py-3 text-sm text-red-500">Failed to load alumni</div>}
+            {alumni.error && (
+              <div className="py-3 text-sm text-red-500">
+                Failed to load alumni
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-2">
@@ -297,8 +459,20 @@ export default function AdminAlumniPage() {
               Page {currentPage} of {totalPages}
             </div>
             <div className="space-x-2">
-              <Button variant="outline" disabled={currentPage <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
-              <Button variant="outline" disabled={isLastPage} onClick={() => setPage((p) => p + 1)}>Next</Button>
+              <Button
+                variant="outline"
+                disabled={currentPage <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                disabled={isLastPage}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next
+              </Button>
             </div>
           </div>
         </CardContent>

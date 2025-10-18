@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { ReactNode } from 'react';
-import { Navbar } from '@/components/layout/navbar';
-import { ErrorBoundary } from '@/components/ui/error-boundary';
-import { Toaster } from 'sonner';
-import Footer from './footer';
+import { ReactNode } from "react";
+import { Navbar } from "@/components/layout/navbar";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { Toaster } from "sonner";
+import Footer from "./footer";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -15,18 +15,16 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="min-h-screen paper-grid">
       <ErrorBoundary>
         <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
-        <Toaster 
+        <Toaster
           position="bottom-right"
           toastOptions={{
             duration: 4000,
             style: {
-              background: 'hsl(var(--background))',
-              color: 'hsl(var(--foreground))',
-              border: '1px solid hsl(var(--border))',
+              background: "hsl(var(--background))",
+              color: "hsl(var(--foreground))",
+              border: "1px solid hsl(var(--border))",
             },
           }}
         />

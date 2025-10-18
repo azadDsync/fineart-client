@@ -5,7 +5,7 @@ export interface User {
   email: string;
   emailVerified: boolean;
   image?: string;
-  role: 'MEMBER' | 'ADMIN';
+  role: "MEMBER" | "ADMIN";
   isStale: boolean;
   expiresAt?: string | null;
   createdAt: string;
@@ -20,7 +20,7 @@ export interface Painting {
   userId: string;
   createdAt: string;
   updatedAt: string;
-  user?: Pick<User, 'id' | 'name' | 'image'>;
+  user?: Pick<User, "id" | "name" | "image">;
 }
 
 export interface Event {
@@ -32,7 +32,7 @@ export interface Event {
   endDate: string;
   organizerId: string;
   createdAt: string;
-  organizer?: Pick<User, 'id' | 'name' | 'image'>;
+  organizer?: Pick<User, "id" | "name" | "image">;
   attendeesCount?: number;
   isAttending?: boolean;
 }
@@ -44,7 +44,7 @@ export interface Announcement {
   authorId: string;
   createdAt: string;
   updatedAt: string;
-  author?: Pick<User, 'id' | 'name' | 'image'>;
+  author?: Pick<User, "id" | "name" | "image">;
 }
 
 export interface Alumni {
@@ -62,7 +62,7 @@ export interface Alumni {
   adminId: string;
   createdAt: string;
   updatedAt: string;
-  addedBy?: Pick<User, 'id' | 'name'>;
+  addedBy?: Pick<User, "id" | "name">;
 }
 
 export interface EventAttendee {
@@ -173,13 +173,13 @@ export interface AdminStats {
 
 export interface UpdateUserStatusData {
   isStale: boolean;
-  role?: 'MEMBER' | 'ADMIN';
+  role?: "MEMBER" | "ADMIN";
   expiresAt?: string | null;
 }
 
 export interface BulkUserActionData {
   userIds: string[];
-  action: 'make_stale' | 'activate' | 'promote_to_admin' | 'demote_to_member';
+  action: "make_stale" | "activate" | "promote_to_admin" | "demote_to_member";
 }
 
 export interface UserStats {
@@ -196,7 +196,7 @@ export interface PaginationParams {
 
 export interface SearchUsersParams extends PaginationParams {
   search?: string;
-  role?: 'MEMBER' | 'ADMIN';
+  role?: "MEMBER" | "ADMIN";
   isStale?: boolean;
 }
 

@@ -1,16 +1,16 @@
 "use client";
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useCurrentUser } from '@/lib/use-current-user';
-import { LoadingSpinner } from '@/components/ui/loading';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/lib/use-current-user";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 interface RoleGateProps {
   children: React.ReactNode;
-  allow: Array<'ADMIN' | 'MEMBER'>;
+  allow: Array<"ADMIN" | "MEMBER">;
   redirectTo?: string;
 }
 
-export function RoleGate({ children, allow, redirectTo = '/' }: RoleGateProps) {
+export function RoleGate({ children, allow, redirectTo = "/" }: RoleGateProps) {
   const { user, isLoading } = useCurrentUser();
   const router = useRouter();
   const authorized = user && allow.includes(user.role);

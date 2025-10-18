@@ -1,11 +1,22 @@
 "use client";
 import { useMemo, useState } from "react";
-import { useUsers, useBulkUserAction, useUpdateUserStatus, useDeleteUser } from "@/lib/hooks/use-api";
+import {
+  useUsers,
+  useBulkUserAction,
+  useUpdateUserStatus,
+  useDeleteUser,
+} from "@/lib/hooks/use-api";
 import type { User, SearchUsersParams } from "@/types/api";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -19,13 +30,16 @@ export default function AdminUsersPage() {
   const [isStale, setIsStale] = useState<string>("ALL");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
 
-  const params = useMemo((): SearchUsersParams => ({
-    page,
-    limit,
-    ...(search ? { search } : {}),
-    ...(role && role !== "ALL" ? { role: role as User["role"] } : {}),
-    ...(isStale !== "ALL" ? { isStale: isStale === "true" } : {}),
-  }), [page, search, role, isStale]);
+  const params = useMemo(
+    (): SearchUsersParams => ({
+      page,
+      limit,
+      ...(search ? { search } : {}),
+      ...(role && role !== "ALL" ? { role: role as User["role"] } : {}),
+      ...(isStale !== "ALL" ? { isStale: isStale === "true" } : {}),
+    }),
+    [page, search, role, isStale]
+  );
 
   const users = useUsers(params, {
     placeholderData: (prev) => prev,
@@ -75,42 +89,92 @@ export default function AdminUsersPage() {
               }}
               className="w-56"
             />
-            <Select value={role} onValueChange={(v) => { setRole(v); setPage(1); }}>
-              <SelectTrigger className="w-36"><SelectValue placeholder="All roles" /></SelectTrigger>
+            <Select
+              value={role}
+              onValueChange={(v) => {
+                setRole(v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="All roles" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All roles</SelectItem>
                 <SelectItem value="MEMBER">Member</SelectItem>
                 <SelectItem value="ADMIN">Admin</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={isStale} onValueChange={(v) => { setIsStale(v); setPage(1); }}>
-              <SelectTrigger className="w-40"><SelectValue placeholder="All statuses" /></SelectTrigger>
+            <Select
+              value={isStale}
+              onValueChange={(v) => {
+                setIsStale(v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="w-40">
+                <SelectValue placeholder="All statuses" />
+              </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All statuses</SelectItem>
                 <SelectItem value="false">Active</SelectItem>
                 <SelectItem value="true">Stale</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={() => users.refetch()} disabled={users.isFetching}>Refresh</Button>
+            <Button onClick={() => users.refetch()} disabled={users.isFetching}>
+              Refresh
+            </Button>
           </div>
 
           <div className="flex flex-wrap gap-2 items-center">
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
-              const userIds = Object.keys(selected).filter((k) => selected[k]);
-              bulkAction.mutate({ userIds, action: "make_stale" });
-            }}>Mark stale</Button>
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
-              const userIds = Object.keys(selected).filter((k) => selected[k]);
-              bulkAction.mutate({ userIds, action: "activate" });
-            }}>Activate</Button>
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
-              const userIds = Object.keys(selected).filter((k) => selected[k]);
-              bulkAction.mutate({ userIds, action: "promote_to_admin" });
-            }}>Promote to admin</Button>
-            <Button variant="outline" disabled={bulkAction.isPending} onClick={() => {
-              const userIds = Object.keys(selected).filter((k) => selected[k]);
-              bulkAction.mutate({ userIds, action: "demote_to_member" });
-            }}>Demote to member</Button>
+            <Button
+              variant="outline"
+              disabled={bulkAction.isPending}
+              onClick={() => {
+                const userIds = Object.keys(selected).filter(
+                  (k) => selected[k]
+                );
+                bulkAction.mutate({ userIds, action: "make_stale" });
+              }}
+            >
+              Mark stale
+            </Button>
+            <Button
+              variant="outline"
+              disabled={bulkAction.isPending}
+              onClick={() => {
+                const userIds = Object.keys(selected).filter(
+                  (k) => selected[k]
+                );
+                bulkAction.mutate({ userIds, action: "activate" });
+              }}
+            >
+              Activate
+            </Button>
+            <Button
+              variant="outline"
+              disabled={bulkAction.isPending}
+              onClick={() => {
+                const userIds = Object.keys(selected).filter(
+                  (k) => selected[k]
+                );
+                bulkAction.mutate({ userIds, action: "promote_to_admin" });
+              }}
+            >
+              Promote to admin
+            </Button>
+            <Button
+              variant="outline"
+              disabled={bulkAction.isPending}
+              onClick={() => {
+                const userIds = Object.keys(selected).filter(
+                  (k) => selected[k]
+                );
+                bulkAction.mutate({ userIds, action: "demote_to_member" });
+              }}
+            >
+              Demote to member
+            </Button>
           </div>
 
           <Separator />
@@ -118,7 +182,13 @@ export default function AdminUsersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left border-b">
-                  <th className="py-2 pr-2"><input type="checkbox" checked={allSelected} onChange={toggleAll} /></th>
+                  <th className="py-2 pr-2">
+                    <input
+                      type="checkbox"
+                      checked={allSelected}
+                      onChange={toggleAll}
+                    />
+                  </th>
                   <th className="py-2 pr-2">Name</th>
                   <th className="py-2 pr-2">Email</th>
                   <th className="py-2 pr-2">Role</th>
@@ -133,18 +203,33 @@ export default function AdminUsersPage() {
                       <input
                         type="checkbox"
                         checked={!!selected[u.id]}
-                        onChange={(e) => setSelected((s) => ({ ...s, [u.id]: e.target.checked }))}
+                        onChange={(e) =>
+                          setSelected((s) => ({
+                            ...s,
+                            [u.id]: e.target.checked,
+                          }))
+                        }
                       />
                     </td>
                     <td className="py-2 pr-2 align-middle">
                       <div className="font-medium">{u.name || "—"}</div>
-                      <div className="text-xs text-muted-foreground">{new Date(u.createdAt).toLocaleDateString()}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(u.createdAt).toLocaleDateString()}
+                      </div>
                     </td>
                     <td className="py-2 pr-2 align-middle">{u.email}</td>
                     <td className="py-2 pr-2 align-middle">
                       <Select
                         value={u.role}
-                        onValueChange={(v) => updateStatus.mutate({ id: u.id, data: { isStale: u.isStale, role: v as User["role"] } })}
+                        onValueChange={(v) =>
+                          updateStatus.mutate({
+                            id: u.id,
+                            data: {
+                              isStale: u.isStale,
+                              role: v as User["role"],
+                            },
+                          })
+                        }
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
@@ -163,28 +248,58 @@ export default function AdminUsersPage() {
                       )}
                     </td>
                     <td className="py-2 pr-2 align-middle space-x-2">
-                      <Button size="sm" variant="outline" onClick={() => updateStatus.mutate({ id: u.id, data: { isStale: !u.isStale } })}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          updateStatus.mutate({
+                            id: u.id,
+                            data: { isStale: !u.isStale },
+                          })
+                        }
+                      >
                         {u.isStale ? "Activate" : "Make stale"}
                       </Button>
-                      <Button size="sm" variant="destructive" onClick={() => delUser.mutate(u.id)}>Deactivate</Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => delUser.mutate(u.id)}
+                      >
+                        Deactivate
+                      </Button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {users.isLoading && <div className="py-3 text-sm">Loading…</div>}
-            {users.error && <div className="py-3 text-sm text-red-500">Failed to load users</div>}
+            {users.error && (
+              <div className="py-3 text-sm text-red-500">
+                Failed to load users
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-2">
             <div className="text-xs text-muted-foreground">
-              Page {users.data?.pagination?.page || page} of {users.data?.pagination?.totalPages ?? "—"}
+              Page {users.data?.pagination?.page || page} of{" "}
+              {users.data?.pagination?.totalPages ?? "—"}
             </div>
             <div className="space-x-2">
-              <Button variant="outline" disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</Button>
               <Button
                 variant="outline"
-                disabled={!!users.data && ((users.data.pagination?.page || 1) >= (users.data.pagination?.totalPages || 1))}
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                disabled={
+                  !!users.data &&
+                  (users.data.pagination?.page || 1) >=
+                    (users.data.pagination?.totalPages || 1)
+                }
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next

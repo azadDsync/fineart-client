@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { User } from '@/types/api';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { User } from "@/types/api";
 
 interface AuthState {
   user: User | null;
@@ -20,16 +20,16 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null, isLoading: false }),
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({ user: state.user }),
     }
   )
 );
 
 interface UIState {
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   sidebarOpen: boolean;
-  setTheme: (theme: 'light' | 'dark' | 'system') => void;
+  setTheme: (theme: "light" | "dark" | "system") => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
 }
@@ -37,14 +37,14 @@ interface UIState {
 export const useUIStore = create<UIState>()(
   persist(
     (set, get) => ({
-      theme: 'system',
+      theme: "system",
       sidebarOpen: false,
       setTheme: (theme) => set({ theme }),
       setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
       toggleSidebar: () => set({ sidebarOpen: !get().sidebarOpen }),
     }),
     {
-      name: 'ui-storage',
+      name: "ui-storage",
     }
   )
 );

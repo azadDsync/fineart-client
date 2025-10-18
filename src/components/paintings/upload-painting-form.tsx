@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useCallback, useMemo, useRef, useState, useEffect } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import { ImagePlus, UploadCloud, X } from "lucide-react";
 import clsx from "clsx";
 import { useCreatePainting } from "@/lib/hooks/use-api";
@@ -23,7 +29,10 @@ type CloudinaryUploadResult = {
   original_filename: string;
 };
 
-export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormProps) {
+export function UploadPaintingForm({
+  onCreated,
+  className,
+}: UploadPaintingFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -37,33 +46,36 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
     onCreated?.(data.data);
   });
 
-  const cloud = useMemo(() => ({
-    name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-    preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
-    folder: process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER,
-  }), []);
+  const cloud = useMemo(
+    () => ({
+      name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      preset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
+      folder: process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER,
+    }),
+    []
+  );
 
   const isCloudinaryConfigured = Boolean(cloud.name && cloud.preset);
   const missingEnv: string[] = useMemo(() => {
     const m: string[] = [];
-    if (!cloud.name) m.push('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME');
-    if (!cloud.preset) m.push('NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET');
+    if (!cloud.name) m.push("NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME");
+    if (!cloud.preset) m.push("NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET");
     return m;
   }, [cloud.name, cloud.preset]);
 
   const validateAndSetFile = useCallback((f: File | null) => {
     setError(null);
     if (f) {
-      const isImage = f.type.startsWith('image/');
+      const isImage = f.type.startsWith("image/");
       const maxBytes = 10 * 1024 * 1024; // 10MB
       if (!isImage) {
-        setError('Please choose a valid image file.');
+        setError("Please choose a valid image file.");
         setFile(null);
         setPreviewUrl(null);
         return;
       }
       if (f.size > maxBytes) {
-        setError('File is too large. Max 10MB.');
+        setError("File is too large. Max 10MB.");
         setFile(null);
         setPreviewUrl(null);
         return;
@@ -72,14 +84,20 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
     setFile(f);
   }, []);
 
-  const onFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] ?? null;
-    validateAndSetFile(f);
-  }, [validateAndSetFile]);
+  const onFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const f = e.target.files?.[0] ?? null;
+      validateAndSetFile(f);
+    },
+    [validateAndSetFile]
+  );
 
   // Make a small object URL preview for the selected file and clean up when changed
   useEffect(() => {
-    if (!file) { setPreviewUrl(null); return; }
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
@@ -92,64 +110,88 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
     setPreviewUrl(null);
   };
 
-  const uploadToCloudinary = useCallback(async (f: File): Promise<CloudinaryUploadResult> => {
-    if (!cloud.name || !cloud.preset) throw new Error("Cloudinary env not configured");
-    const url = `https://api.cloudinary.com/v1_1/${cloud.name}/image/upload`;
-    const form = new FormData();
-    form.append("file", f);
-    form.append("upload_preset", cloud.preset);
-    if (cloud.folder) form.append("folder", cloud.folder);
-    const res = await fetch(url, { method: "POST", body: form });
-    const contentType = res.headers.get('content-type') || '';
-    if (!res.ok) {
-      let message = `Cloudinary upload failed (${res.status})`;
-      try {
-        if (contentType.includes('application/json')) {
-          const j = await res.json();
-          if (j?.error?.message) message += `: ${j.error.message}`;
-        } else {
-          const txt = await res.text();
-          if (txt) message += `: ${txt}`;
+  const uploadToCloudinary = useCallback(
+    async (f: File): Promise<CloudinaryUploadResult> => {
+      if (!cloud.name || !cloud.preset)
+        throw new Error("Cloudinary env not configured");
+      const url = `https://api.cloudinary.com/v1_1/${cloud.name}/image/upload`;
+      const form = new FormData();
+      form.append("file", f);
+      form.append("upload_preset", cloud.preset);
+      if (cloud.folder) form.append("folder", cloud.folder);
+      const res = await fetch(url, { method: "POST", body: form });
+      const contentType = res.headers.get("content-type") || "";
+      if (!res.ok) {
+        let message = `Cloudinary upload failed (${res.status})`;
+        try {
+          if (contentType.includes("application/json")) {
+            const j = await res.json();
+            if (j?.error?.message) message += `: ${j.error.message}`;
+          } else {
+            const txt = await res.text();
+            if (txt) message += `: ${txt}`;
+          }
+        } catch {
+          // ignore parse errors
         }
-      } catch {
-        // ignore parse errors
+        throw new Error(message);
       }
-      throw new Error(message);
-    }
-    return res.json();
-  }, [cloud.folder, cloud.name, cloud.preset]);
+      return res.json();
+    },
+    [cloud.folder, cloud.name, cloud.preset]
+  );
 
-  const onSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    if (!file) { setError("Please select an image file."); return; }
-    if (!title.trim()) { setError("Please enter a title."); return; }
-    try {
-      setIsCloudinaryUploading(true);
-      const uploaded = await uploadToCloudinary(file);
-      const payload = { title: title.trim(), description: description.trim() || undefined, imageUrl: uploaded.secure_url };
-      createPainting.mutate(payload, {
-        onSuccess: () => {
-          reset();
-          setIsCloudinaryUploading(false);
-        },
-        onError: (err) => {
-          const msg = err instanceof Error ? err.message : "Failed to create painting";
-          setError(msg);
-          setIsCloudinaryUploading(false);
-        }
-      });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Upload failed";
-      setError(msg);
-      setIsCloudinaryUploading(false);
-    }
-  }, [file, title, description, createPainting, uploadToCloudinary]);
+  const onSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setError(null);
+      if (!file) {
+        setError("Please select an image file.");
+        return;
+      }
+      if (!title.trim()) {
+        setError("Please enter a title.");
+        return;
+      }
+      try {
+        setIsCloudinaryUploading(true);
+        const uploaded = await uploadToCloudinary(file);
+        const payload = {
+          title: title.trim(),
+          description: description.trim() || undefined,
+          imageUrl: uploaded.secure_url,
+        };
+        createPainting.mutate(payload, {
+          onSuccess: () => {
+            reset();
+            setIsCloudinaryUploading(false);
+          },
+          onError: (err) => {
+            const msg =
+              err instanceof Error ? err.message : "Failed to create painting";
+            setError(msg);
+            setIsCloudinaryUploading(false);
+          },
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Upload failed";
+        setError(msg);
+        setIsCloudinaryUploading(false);
+      }
+    },
+    [file, title, description, createPainting, uploadToCloudinary]
+  );
 
   const isUploading = isCloudinaryUploading || createPainting.isPending;
 
   return (
-    <form onSubmit={onSubmit} className={clsx("rounded-lg border p-4 space-y-3 bg-background", className)}>
+    <form
+      onSubmit={onSubmit}
+      className={clsx(
+        "rounded-lg border p-4 space-y-3 bg-background",
+        className
+      )}
+    >
       <div className="space-y-1">
         <label className="text-sm font-medium">Title</label>
         <input
@@ -188,18 +230,36 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
             role="button"
             tabIndex={0}
             onClick={() => inputRef.current?.click()}
-            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click(); }}
-            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
-            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
-            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragging(true);
+            }}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragging(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragging(false);
+            }}
             onDrop={(e) => {
-              e.preventDefault(); e.stopPropagation(); setIsDragging(false);
+              e.preventDefault();
+              e.stopPropagation();
+              setIsDragging(false);
               const f = e.dataTransfer?.files?.[0] ?? null;
               validateAndSetFile(f);
             }}
             className={
               `relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-8 text-center cursor-pointer transition-colors ` +
-              (isDragging ? 'border-foreground bg-muted/30' : 'border-muted-foreground/30 hover:border-foreground/60')
+              (isDragging
+                ? "border-foreground bg-muted/30"
+                : "border-muted-foreground/30 hover:border-foreground/60")
             }
             aria-label="Choose image to upload"
           >
@@ -207,47 +267,75 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
               <UploadCloud className="h-5 w-5" />
             </div>
             <div className="text-sm">
-              <span className="font-medium">Click to browse</span> or drag and drop
+              <span className="font-medium">Click to browse</span> or drag and
+              drop
             </div>
-            <div className="text-xs text-muted-foreground">JPG, PNG, or WebP up to 10MB</div>
+            <div className="text-xs text-muted-foreground">
+              JPG, PNG, or WebP up to 10MB
+            </div>
           </div>
         ) : (
           <div className="relative overflow-hidden rounded-lg border">
             {previewUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={previewUrl} alt="Selected preview" className="h-56 w-full object-cover" />
+              <img
+                src={previewUrl}
+                alt="Selected preview"
+                className="h-56 w-full object-cover"
+              />
             ) : (
-              <div className="h-56 w-full flex items-center justify-center bg-muted/20"><ImagePlus className="h-8 w-8" /></div>
+              <div className="h-56 w-full flex items-center justify-center bg-muted/20">
+                <ImagePlus className="h-8 w-8" />
+              </div>
             )}
             {/* Overlay actions */}
             <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-black/60 to-transparent p-2 text-xs text-white">
-              <div className="truncate">{file.name} · {(file.size / 1024).toFixed(0)} KB</div>
+              <div className="truncate">
+                {file.name} · {(file.size / 1024).toFixed(0)} KB
+              </div>
               <div className="flex gap-2">
                 <button
                   type="button"
                   className="rounded-md bg-white/90 px-2 py-1 text-[11px] font-medium text-black hover:bg-white"
                   onClick={() => inputRef.current?.click()}
-                >Change</button>
+                >
+                  Change
+                </button>
                 <button
                   type="button"
                   aria-label="Remove image"
                   className="rounded-md bg-white/90 p-1 text-black hover:bg-white"
-                  onClick={() => { setFile(null); setPreviewUrl(null); if (inputRef.current) inputRef.current.value = ""; }}
-                ><X className="h-4 w-4" /></button>
+                  onClick={() => {
+                    setFile(null);
+                    setPreviewUrl(null);
+                    if (inputRef.current) inputRef.current.value = "";
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
             </div>
           </div>
         )}
 
-        <p id="image-help" className="text-xs text-muted-foreground">Max ~10MB. JPG/PNG/WebP recommended.</p>
+        <p id="image-help" className="text-xs text-muted-foreground">
+          Max ~10MB. JPG/PNG/WebP recommended.
+        </p>
       </div>
 
       {!isCloudinaryConfigured && (
         <div className="rounded-md border border-yellow-500/30 bg-yellow-500/10 p-2 text-xs">
           <div className="font-medium">Missing Cloudinary env.</div>
-          <div>Please set the following in <code>.env.local</code> and restart the dev server:</div>
+          <div>
+            Please set the following in <code>.env.local</code> and restart the
+            dev server:
+          </div>
           <ul className="list-disc pl-5 mt-1">
-            {missingEnv.map((k) => (<li key={k}><code>{k}</code></li>))}
+            {missingEnv.map((k) => (
+              <li key={k}>
+                <code>{k}</code>
+              </li>
+            ))}
           </ul>
         </div>
       )}
@@ -261,9 +349,16 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
       <div className="flex items-center gap-2">
         <button
           type="submit"
-          disabled={isUploading || !file || !title.trim() || !isCloudinaryConfigured}
+          disabled={
+            isUploading || !file || !title.trim() || !isCloudinaryConfigured
+          }
           aria-busy={isUploading}
-          className={clsx("rounded-md px-4 py-2 text-sm font-medium border", isUploading ? "opacity-60 cursor-not-allowed" : "hover:bg-foreground hover:text-background")}
+          className={clsx(
+            "rounded-md px-4 py-2 text-sm font-medium border",
+            isUploading
+              ? "opacity-60 cursor-not-allowed"
+              : "hover:bg-foreground hover:text-background"
+          )}
         >
           {isUploading ? "Uploading…" : "Upload & Create"}
         </button>
@@ -272,7 +367,9 @@ export function UploadPaintingForm({ onCreated, className }: UploadPaintingFormP
           onClick={reset}
           disabled={isUploading}
           className="rounded-md px-3 py-2 text-sm border"
-        >Reset</button>
+        >
+          Reset
+        </button>
       </div>
     </form>
   );

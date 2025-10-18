@@ -1,12 +1,7 @@
 "use client";
 
 import { MailIcon } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -36,24 +31,20 @@ export default function ForgotPassword() {
   const onSubmit = async (data: ForgotPasswordForm) => {
     try {
       await authClient.forgetPassword({
-        email:data.email,
-        redirectTo:'/',
-        fetchOptions:{
-            onRequest:()=>{
-
-            },
-            onResponse:()=>{
-
-            },
-            onError:(ctx)=>{
-                toast.error(ctx.error.message)
-            },
-            onSuccess:()=>{
-                toast.success("Reset link sent to your email!")
-                redirect('/forgot-password?message=success')
-            }
-        }
-      })
+        email: data.email,
+        redirectTo: "/",
+        fetchOptions: {
+          onRequest: () => {},
+          onResponse: () => {},
+          onError: (ctx) => {
+            toast.error(ctx.error.message);
+          },
+          onSuccess: () => {
+            toast.success("Reset link sent to your email!");
+            redirect("/forgot-password?message=success");
+          },
+        },
+      });
       console.log("Reset link sent to:", data.email);
     } catch (error) {
       console.error("Error sending reset link:", error);
@@ -91,11 +82,7 @@ export default function ForgotPassword() {
               )}
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-            >
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Sending..." : "Send Reset Link"}
             </Button>
           </form>

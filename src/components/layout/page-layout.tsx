@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -14,10 +14,10 @@ export function PageLayout({
   title,
   description,
   actions,
-  className
+  className,
 }: PageLayoutProps) {
   return (
-    <div className={cn('min-h-screen', className)}>
+    <div className={cn("min-h-screen", className)}>
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {(title || description || actions) && (
           <div className="mb-8">
@@ -42,9 +42,7 @@ export function PageLayout({
             </div>
           </div>
         )}
-        <div className="rounded-xl">
-          {children}
-        </div>
+        <div className="rounded-xl">{children}</div>
       </div>
     </div>
   );

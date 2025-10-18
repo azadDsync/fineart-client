@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { 
-  Palette, 
-  Calendar, 
-  Megaphone, 
-  Users, 
-  Settings, 
-  LogOut, 
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  Palette,
+  Calendar,
+  Megaphone,
+  Users,
+  Settings,
+  LogOut,
   LogIn,
   User,
   Menu,
-  Home
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+  Home,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,22 +24,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useAuthStore, useUIStore } from '@/store';
-import { authClient } from '@/lib/auth-client';
-import { toast } from 'sonner';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+} from "@/components/ui/dropdown-menu";
+import { useAuthStore, useUIStore } from "@/store";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navigation = [
-  { name: 'Home', href: '/', icon: Home },
-  { name: 'Gallery', href: '/paintings', icon: Palette },
-  { name: 'Events', href: '/events', icon: Calendar },
-  { name: 'Announcements', href: '/announcements', icon: Megaphone },
-  { name: 'Alumni', href: '/alumni', icon: Users },
+  { name: "Home", href: "/", icon: Home },
+  { name: "Gallery", href: "/paintings", icon: Palette },
+  { name: "Events", href: "/events", icon: Calendar },
+  { name: "Announcements", href: "/announcements", icon: Megaphone },
+  { name: "Alumni", href: "/alumni", icon: Users },
 ];
 
 const adminNavigation = [
-  { name: 'Admin Panel', href: '/admin', icon: Settings },
+  { name: "Admin Panel", href: "/admin", icon: Settings },
 ];
 
 export function Navbar() {
@@ -52,43 +52,49 @@ export function Navbar() {
     try {
       await authClient.signOut();
       logout();
-      router.push('/');
-      toast.success('Logged out successfully');
+      router.push("/");
+      toast.success("Logged out successfully");
     } catch (error) {
-      console.error('Logout error:', error);
-      toast.error('Failed to logout');
+      console.error("Logout error:", error);
+      toast.error("Failed to logout");
     }
   };
 
-  const isAdmin = user?.role === 'ADMIN';
-  const allNavigation = isAdmin ? [...navigation, ...adminNavigation] : navigation;
+  const isAdmin = user?.role === "ADMIN";
+  const allNavigation = isAdmin
+    ? [...navigation, ...adminNavigation]
+    : navigation;
 
-    return (
+  return (
     <nav className="sticky top-0 z-50 border-b border-white/20 dark:border-white/10 bg-background/60 backdrop-blur-xl">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center">
-              <Link href="/" className="text-2xl font-semibold text-primary heading-display tracking-tight">
+              <Link
+                href="/"
+                className="text-2xl font-semibold text-primary heading-display tracking-tight"
+              >
                 FineArt
               </Link>
             </div>
-            
+
             {/* Desktop navigation */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {allNavigation.map((item) => {
-                const isActive = pathname === item.href || 
-                  (item.href !== '/' && pathname.startsWith(item.href));
-                
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/" && pathname.startsWith(item.href));
+
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
                     className={cn(
-                      'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors',
+                      "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors",
                       isActive
-                        ? 'border-primary text-gray-900 dark:text-white'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                        ? "border-primary text-gray-900 dark:text-white"
+                        : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                     )}
                   >
                     <item.icon className="mr-2 h-4 w-4" />
@@ -111,14 +117,19 @@ export function Navbar() {
               </Button>
             </div>
 
-           
-            <div className='hidden sm:flex'> <ThemeToggle /></div>
+            <div className="hidden sm:flex">
+              {" "}
+              <ThemeToggle />
+            </div>
 
             {/* User menu */}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.image} alt={user.name} />
                       <AvatarFallback>
@@ -130,7 +141,9 @@ export function Navbar() {
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-sm font-medium leading-none">
+                        {user.name}
+                      </p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {user.email}
                       </p>
@@ -180,18 +193,19 @@ export function Navbar() {
         <div className="sm:hidden">
           <div className="space-y-1 pb-3 pt-2">
             {allNavigation.map((item) => {
-              const isActive = pathname === item.href || 
-                (item.href !== '/' && pathname.startsWith(item.href));
-              
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(item.href));
+
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
+                    "block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
                     isActive
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                   )}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -202,67 +216,67 @@ export function Navbar() {
                 </Link>
               );
             })}
-                {/* Mobile: User actions when logged in */}
-                {user && (
-                  <>
-                    <div className="my-2 border-t border-border/50" />
-                    <Link
-                      href="/profile"
-                      className={cn(
-                        'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
-                        pathname === '/profile'
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
-                      )}
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <div className="flex items-center">
-                        <User className="mr-3 h-5 w-5" />
-                        Profile
-                      </div>
-                    </Link>
-                    <Link
-                      href="/paintings/my"
-                      className={cn(
-                        'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
-                        pathname.startsWith('/paintings/my')
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
-                      )}
-                      onClick={() => setSidebarOpen(false)}
-                    >
-                      <div className="flex items-center">
-                        <Palette className="mr-3 h-5 w-5" />
-                        My Paintings
-                      </div>
-                    </Link>
-                    <button
-                      type="button"
-                      className={cn(
-                        'w-full text-left border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
-                        'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
-                      )}
-                      onClick={() => {
-                        setSidebarOpen(false);
-                        handleLogout();
-                      }}
-                    >
-                      <div className="flex items-center">
-                        <LogOut className="mr-3 h-5 w-5" />
-                        Log out
-                      </div>
-                    </button>
-                  </>
-                )}
+            {/* Mobile: User actions when logged in */}
+            {user && (
+              <>
+                <div className="my-2 border-t border-border/50" />
+                <Link
+                  href="/profile"
+                  className={cn(
+                    "block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
+                    pathname === "/profile"
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                  )}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <User className="mr-3 h-5 w-5" />
+                    Profile
+                  </div>
+                </Link>
+                <Link
+                  href="/paintings/my"
+                  className={cn(
+                    "block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
+                    pathname.startsWith("/paintings/my")
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                  )}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <div className="flex items-center">
+                    <Palette className="mr-3 h-5 w-5" />
+                    My Paintings
+                  </div>
+                </Link>
+                <button
+                  type="button"
+                  className={cn(
+                    "w-full text-left border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
+                    "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                  )}
+                  onClick={() => {
+                    setSidebarOpen(false);
+                    handleLogout();
+                  }}
+                >
+                  <div className="flex items-center">
+                    <LogOut className="mr-3 h-5 w-5" />
+                    Log out
+                  </div>
+                </button>
+              </>
+            )}
             {/* Mobile: Sign in link when logged out */}
             {!user && (
               <Link
                 href="/sign-in"
                 className={cn(
-                  'block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors',
-                  pathname === '/sign-in'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200'
+                  "block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
+                  pathname === "/sign-in"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-transparent text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
                 )}
                 onClick={() => setSidebarOpen(false)}
               >
@@ -275,8 +289,8 @@ export function Navbar() {
           </div>
         </div>
       )}
-        {/* subtle gradient hairline for glass edge */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
+      {/* subtle gradient hairline for glass edge */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
     </nav>
   );
 }

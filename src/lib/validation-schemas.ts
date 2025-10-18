@@ -8,7 +8,11 @@ export const createPaintingSchema = z.object({
 });
 
 export const updatePaintingSchema = z.object({
-  title: z.string().min(1, "Title is required").max(255, "Title is too long").optional(),
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(255, "Title is too long")
+    .optional(),
   description: z.string().optional().nullable(),
   imageUrl: z.string().url("Must be a valid URL").optional(),
 });
@@ -24,13 +28,17 @@ export const createEventSchema = z
     endDate: z.coerce.date(),
   })
   .refine((data) => data.endDate >= data.startDate, {
-    message: 'End date must be after start date',
-    path: ['endDate'],
+    message: "End date must be after start date",
+    path: ["endDate"],
   });
 
 export const updateEventSchema = z
   .object({
-    title: z.string().min(1, "Title is required").max(255, "Title is too long").optional(),
+    title: z
+      .string()
+      .min(1, "Title is required")
+      .max(255, "Title is too long")
+      .optional(),
     description: z.string().optional().nullable(),
     location: z.string().optional().nullable(),
     startDate: z.coerce.date().optional(),
@@ -40,8 +48,8 @@ export const updateEventSchema = z
     if (data.startDate && data.endDate && data.endDate < data.startDate) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'End date must be after start date',
-        path: ['endDate'],
+        message: "End date must be after start date",
+        path: ["endDate"],
       });
     }
   });
@@ -53,7 +61,11 @@ export const createAnnouncementSchema = z.object({
 });
 
 export const updateAnnouncementSchema = z.object({
-  title: z.string().min(1, "Title is required").max(255, "Title is too long").optional(),
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(255, "Title is too long")
+    .optional(),
   message: z.string().min(1, "Message is required").optional(),
 });
 
@@ -61,7 +73,13 @@ export const updateAnnouncementSchema = z.object({
 export const createAlumniSchema = z.object({
   name: z.string().min(1, "Name is required").max(255, "Name is too long"),
   email: z.string().email("Must be a valid email").optional().nullable(),
-  batchYear: z.number().int().min(1900, "Invalid year").max(new Date().getFullYear(), "Year cannot be in the future").optional().nullable(),
+  batchYear: z
+    .number()
+    .int()
+    .min(1900, "Invalid year")
+    .max(new Date().getFullYear(), "Year cannot be in the future")
+    .optional()
+    .nullable(),
   details: z.string().optional().nullable(),
   imageUrl: z.string().url("Must be a valid URL").optional().nullable(),
   website: z.string().url("Must be a valid URL").optional().nullable(),
@@ -72,9 +90,19 @@ export const createAlumniSchema = z.object({
 });
 
 export const updateAlumniSchema = z.object({
-  name: z.string().min(1, "Name is required").max(255, "Name is too long").optional(),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(255, "Name is too long")
+    .optional(),
   email: z.string().email("Must be a valid email").optional().nullable(),
-  batchYear: z.number().int().min(1900, "Invalid year").max(new Date().getFullYear(), "Year cannot be in the future").optional().nullable(),
+  batchYear: z
+    .number()
+    .int()
+    .min(1900, "Invalid year")
+    .max(new Date().getFullYear(), "Year cannot be in the future")
+    .optional()
+    .nullable(),
   details: z.string().optional().nullable(),
   imageUrl: z.string().url("Must be a valid URL").optional().nullable(),
   website: z.string().url("Must be a valid URL").optional().nullable(),
@@ -93,7 +121,12 @@ export const updateUserStatusSchema = z.object({
 
 export const bulkUserActionSchema = z.object({
   userIds: z.array(z.string().uuid("Invalid user ID")),
-  action: z.enum(["make_stale", "activate", "promote_to_admin", "demote_to_member"]),
+  action: z.enum([
+    "make_stale",
+    "activate",
+    "promote_to_admin",
+    "demote_to_member",
+  ]),
 });
 
 // Query parameter schemas

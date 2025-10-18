@@ -20,8 +20,6 @@ import { authClient } from "@/lib/auth-client";
 import { SignInData, signInSchema } from "@/types/auth-schema";
 import { toast } from "sonner";
 
-
-
 // Social providers configuration
 const SOCIAL_PROVIDERS = [
   { provider: "google", icon: FaGoogle, label: "Continue with Google" },
@@ -67,7 +65,7 @@ export default function SignInForm() {
               "Failed to sign in. Please check your credentials.";
 
             if (errorMessage == "Email not verified") {
-              toast.success("email sent please verify!")
+              toast.success("email sent please verify!");
             }
             setServerError(`${errorMessage},check your email`);
           },
@@ -86,10 +84,9 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      
       await authClient.signIn.social({
         provider,
-        callbackURL:`${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
+        callbackURL: `${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
       });
     } catch (error: unknown) {
       console.log(error);
@@ -102,7 +99,7 @@ export default function SignInForm() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4">
-  <div className="mx-auto grid w-[350px] gap-6 border-2 rounded-lg p-6 border-black shadow-[8px_8px_0px_#000] panel-fill" >
+      <div className="mx-auto grid w-[350px] gap-6 border-2 rounded-lg p-6 border-black shadow-[8px_8px_0px_#000] panel-fill">
         <div className="grid gap-2 text-center">
           <h1 className="text-3xl font-bold">Login</h1>
           <p className="text-balance text-muted-foreground">
@@ -122,7 +119,9 @@ export default function SignInForm() {
               className="input-fill"
             />
             {errors.email && (
-              <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+              <p className="text-sm text-red-600 mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
           <div className="grid gap-2">
@@ -136,13 +135,13 @@ export default function SignInForm() {
               </Link>
             </div>
             <div className="relative">
-                <Input
+              <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 required
                 disabled={isFormDisabled}
-                  {...register("password")}
-                  className="input-fill"
+                {...register("password")}
+                className="input-fill"
               />
               <button
                 type="button"
@@ -150,15 +149,21 @@ export default function SignInForm() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 tabIndex={-1}
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
+              <p className="text-sm text-red-600 mt-1">
+                {errors.password.message}
+              </p>
             )}
             <div className="text-right">
-              <Link 
-                href="/forgot-password" 
+              <Link
+                href="/forgot-password"
                 className="text-sm text-blue-600 hover:text-blue-500 underline"
               >
                 Forgot password?

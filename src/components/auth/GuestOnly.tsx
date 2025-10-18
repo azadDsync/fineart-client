@@ -1,14 +1,14 @@
 "use client";
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useCurrentUser } from '@/lib/use-current-user';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/lib/use-current-user";
 
 interface GuestOnlyProps {
   children: React.ReactNode;
   redirectTo?: string;
 }
 
-export function GuestOnly({ children, redirectTo = '/' }: GuestOnlyProps) {
+export function GuestOnly({ children, redirectTo = "/" }: GuestOnlyProps) {
   const { isLoading, isAuthenticated } = useCurrentUser();
   const router = useRouter();
 

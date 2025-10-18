@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
-import { Component, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Component, ReactNode } from "react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -15,7 +21,10 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -26,7 +35,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error("Error caught by boundary:", error, errorInfo);
   }
 
   retry = () => {
@@ -39,7 +48,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback(this.state.error!, this.retry);
       }
 
-      return <DefaultErrorFallback error={this.state.error!} retry={this.retry} />;
+      return (
+        <DefaultErrorFallback error={this.state.error!} retry={this.retry} />
+      );
     }
 
     return this.props.children;
@@ -65,7 +76,7 @@ function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {process.env.NODE_ENV === 'development' && (
+          {process.env.NODE_ENV === "development" && (
             <div className="rounded-md bg-gray-100 p-3 dark:bg-gray-800">
               <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Error Details:
@@ -92,11 +103,11 @@ interface ErrorMessageProps {
   className?: string;
 }
 
-export function ErrorMessage({ 
-  title = 'Error', 
-  message, 
-  retry, 
-  className 
+export function ErrorMessage({
+  title = "Error",
+  message,
+  retry,
+  className,
 }: ErrorMessageProps) {
   return (
     <Card className={className}>
