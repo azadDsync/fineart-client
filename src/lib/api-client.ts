@@ -26,8 +26,24 @@ import type {
   AlumniStatsData,
 } from "@/types/api";
 
-const API_BASE_URL =
-  `${process.env.NEXT_PUBLIC_API_URL}/api` || "http://localhost:8787/api";
+// Use production URL if NEXT_PUBLIC_API_URL is not set (for deployed environments)
+const getApiBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  }
+  // In production (deployed), use production API URL
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    // If accessing from production domain, use production API
+    if (hostname === 'fa.nitkkr.page' || hostname === 'finearts-club.vercel.app') {
+      return 'https://fa-api.nitkkr.page/api';
+    }
+  }
+  // Development fallback
+  return "http://localhost:8787/api";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 class ApiClient {
   private async request<T>(
@@ -43,39 +59,59 @@ class ApiClient {
 
     // Better Auth uses cookies for authentication, so we don't need to manually set tokens
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers,
-      credentials: "include",
-    });
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        ...options,
+        headers,
+        credentials: "include",
+      });
 
-    if (!response.ok) {
-      type MaybeErr = Partial<ApiError> & { message?: string };
-      let parsed: MaybeErr = {
-        error: "Network error",
-        status: response.status,
-      };
-      try {
-        parsed = await response.json();
-      } catch {
-        // keep default parsed
+      if (!response.ok) {
+        type MaybeErr = Partial<ApiError> & { message?: string };
+        let parsed: MaybeErr = {
+          error: "Network error",
+          status: response.status,
+        };
+        try {
+          parsed = await response.json();
+        } catch {
+          // keep default parsed
+        }
+        const message =
+          typeof parsed.error === "string"
+            ? parsed.error
+            : typeof parsed.message === "string"
+            ? parsed.message
+            : "Request failed";
+        
+        // Log error for debugging
+        console.error('[API Error]', {
+          endpoint,
+          status: response.status,
+          message,
+          apiBaseUrl: API_BASE_URL
+        });
+        
+        const err = new Error(message) as Error & {
+          status?: number;
+          code?: string;
+        };
+        err.status = parsed.status ?? response.status;
+        err.code = parsed.code;
+        throw err;
       }
-      const message =
-        typeof parsed.error === "string"
-          ? parsed.error
-          : typeof parsed.message === "string"
-          ? parsed.message
-          : "Request failed";
-      const err = new Error(message) as Error & {
-        status?: number;
-        code?: string;
-      };
-      err.status = parsed.status ?? response.status;
-      err.code = parsed.code;
-      throw err;
-    }
 
-    return response.json();
+      return response.json();
+    } catch (error) {
+      // Enhanced error logging for mobile debugging
+      console.error('[API Request Failed]', {
+        endpoint,
+        apiBaseUrl: API_BASE_URL,
+        error: error instanceof Error ? error.message : String(error),
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'N/A'
+      });
+      throw error;
+    }
   }
 
   private buildQueryString(
