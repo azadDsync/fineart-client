@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Palette,
@@ -73,9 +74,17 @@ export function Navbar() {
             <div className="flex flex-shrink-0 items-center">
               <Link
                 href="/"
-                className="text-2xl font-semibold text-primary heading-display tracking-tight"
+                className="flex items-center gap-2 text-2xl font-semibold text-primary heading-display tracking-tight"
               >
-                FineArt
+                <Image
+                  src="/logo.png"
+                  alt="FineArt & Modeling Club Logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                  priority
+                />
+                <span>FineArt</span>
               </Link>
             </div>
 
