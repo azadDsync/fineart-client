@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight } from "lucide-react";
@@ -21,24 +22,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="h-10 w-10 rounded-md bg-accent/15 flex items-center justify-center">
-                <span className="sr-only">FineArt</span>
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="text-accent-foreground"
-                >
-                  <path
-                    d="M4 7h16M4 12h16M4 17h10"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+              <div className="h-10 w-10 rounded-md flex items-center justify-center">
+                <Image
+                  src="/logo.png"
+                  alt="FineArt & Modeling Club Logo"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                />
               </div>
               <div>
                 <div className="text-lg font-semibold">FineArt</div>
