@@ -39,6 +39,11 @@ import type {
   SearchPaintingsParams,
   EventAttendee,
   AlumniStatsData,
+  AuthorizedEmail,
+  CreateAuthorizedEmailData,
+  BulkAuthorizedEmailsData,
+  BulkDeleteAuthorizedEmailsData,
+  CheckAuthorizedEmailResponse,
 } from "@/types/api";
 
 // ============================================================================
@@ -624,5 +629,104 @@ export function useBulkUserAction(
       queryClient.invalidateQueries({ queryKey: queryKeys.admin.stats() });
       onSuccessCallback?.(data);
     },
+  });
+}
+
+// ============================================================================
+// AUTHORIZED EMAILS HOOKS
+// ============================================================================
+
+export function useAuthorizedEmails(
+  params: PaginationParams & { search?: string } = {},
+  options?: Omit<UseQueryOptions<ApiResponse<AuthorizedEmail[]>>, "queryKey" | "queryFn">
+) {
+  return useQuery({
+    queryKey: queryKeys.admin.authorizedEmails.list(params),
+    queryFn: () => apiClient.getAuthorizedEmails(params),
+    staleTime: 5 * 60 * 1000,
+    ...options,
+  });
+}
+
+export function useCreateAuthorizedEmail(
+  onSuccessCallback?: (data: ApiResponse<AuthorizedEmail>) => void
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CreateAuthorizedEmailData) =>
+      apiClient.createAuthorizedEmail(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.authorizedEmails.lists(),
+      });
+      onSuccessCallback?.(data);
+    },
+  });
+}
+
+export function useBulkCreateAuthorizedEmails(
+  onSuccessCallback?: (
+    data: ApiResponse<AuthorizedEmail[] & { message: string; skipped: string[] }>
+  ) => void
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: BulkAuthorizedEmailsData) =>
+      apiClient.bulkCreateAuthorizedEmails(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.authorizedEmails.lists(),
+      });
+      onSuccessCallback?.(data);
+    },
+  });
+}
+
+export function useDeleteAuthorizedEmail(
+  onSuccessCallback?: (data: ApiResponse<AuthorizedEmail & { message: string }>) => void
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => apiClient.deleteAuthorizedEmail(id),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.authorizedEmails.lists(),
+      });
+      onSuccessCallback?.(data);
+    },
+  });
+}
+
+export function useBulkDeleteAuthorizedEmails(
+  onSuccessCallback?: (
+    data: ApiResponse<AuthorizedEmail[] & { message: string }>
+  ) => void
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: BulkDeleteAuthorizedEmailsData) =>
+      apiClient.bulkDeleteAuthorizedEmails(data),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.admin.authorizedEmails.lists(),
+      });
+      onSuccessCallback?.(data);
+    },
+  });
+}
+
+export function useCheckAuthorizedEmail(
+  email: string,
+  options?: Omit<
+    UseQueryOptions<CheckAuthorizedEmailResponse>,
+    "queryKey" | "queryFn"
+  >
+) {
+  return useQuery({
+    queryKey: queryKeys.admin.authorizedEmails.check(email),
+    queryFn: () => apiClient.checkAuthorizedEmail(email),
+    enabled: !!email && email.includes("@"),
+    staleTime: 5 * 60 * 1000,
+    ...options,
   });
 }

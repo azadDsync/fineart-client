@@ -82,5 +82,13 @@ export const queryKeys = {
       detail: (id: string) =>
         [...queryKeys.admin.users.all(), "detail", id] as const,
     },
+    authorizedEmails: {
+      all: () => [...queryKeys.admin.all(), "authorized-emails"] as const,
+      lists: () => [...queryKeys.admin.authorizedEmails.all(), "list"] as const,
+      list: (params?: PaginationParams & { search?: string }) =>
+        [...queryKeys.admin.authorizedEmails.lists(), params ?? {}] as const,
+      check: (email: string) =>
+        [...queryKeys.admin.authorizedEmails.all(), "check", email] as const,
+    },
   },
 } as const;

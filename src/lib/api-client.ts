@@ -24,6 +24,11 @@ import type {
   SearchPaintingsParams,
   EventAttendee,
   AlumniStatsData,
+  AuthorizedEmail,
+  CreateAuthorizedEmailData,
+  BulkAuthorizedEmailsData,
+  BulkDeleteAuthorizedEmailsData,
+  CheckAuthorizedEmailResponse,
 } from "@/types/api";
 
 // Use production URL if NEXT_PUBLIC_API_URL is not set (for deployed environments)
@@ -377,6 +382,53 @@ class ApiClient {
       method: "POST",
       body: JSON.stringify(data),
     });
+  }
+
+  // Authorized Emails API
+  async getAuthorizedEmails(
+    params: PaginationParams & { search?: string } = {}
+  ): Promise<ApiResponse<AuthorizedEmail[]>> {
+    const queryString = this.buildQueryString(params);
+    return this.request(`/admin/authorized-emails${queryString}`);
+  }
+
+  async createAuthorizedEmail(
+    data: CreateAuthorizedEmailData
+  ): Promise<ApiResponse<AuthorizedEmail>> {
+    return this.request("/admin/authorized-emails", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async bulkCreateAuthorizedEmails(
+    data: BulkAuthorizedEmailsData
+  ): Promise<ApiResponse<AuthorizedEmail[] & { message: string; skipped: string[] }>> {
+    return this.request("/admin/authorized-emails/bulk", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteAuthorizedEmail(
+    id: string
+  ): Promise<ApiResponse<AuthorizedEmail & { message: string }>> {
+    return this.request(`/admin/authorized-emails/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async bulkDeleteAuthorizedEmails(
+    data: BulkDeleteAuthorizedEmailsData
+  ): Promise<ApiResponse<AuthorizedEmail[] & { message: string }>> {
+    return this.request("/admin/authorized-emails/bulk-delete", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async checkAuthorizedEmail(email: string): Promise<CheckAuthorizedEmailResponse> {
+    return this.request(`/admin/authorized-emails/check/${encodeURIComponent(email)}`);
   }
 
   // Health check

@@ -216,3 +216,32 @@ export interface SearchPaintingsParams extends PaginationParams {
   // Free text search against title and description
   search?: string;
 }
+
+// Authorized emails types
+export interface AuthorizedEmail {
+  id: string;
+  email: string;
+  addedById: string;
+  notes?: string | null;
+  createdAt: string;
+  addedBy?: Pick<User, "id" | "name">;
+}
+
+export interface CreateAuthorizedEmailData {
+  email: string;
+  notes?: string;
+}
+
+export interface BulkAuthorizedEmailsData {
+  emails: string[];
+  notes?: string;
+}
+
+export interface BulkDeleteAuthorizedEmailsData {
+  ids: string[];
+}
+
+export interface CheckAuthorizedEmailResponse {
+  isAuthorized: boolean;
+  data: AuthorizedEmail | null;
+}

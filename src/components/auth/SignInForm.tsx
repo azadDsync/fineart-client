@@ -2,8 +2,9 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { FaGoogle } from "react-icons/fa";
 import { Eye, EyeOff } from "lucide-react";
@@ -30,6 +31,22 @@ export default function SignInForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Check for OAuth error in URL params (from backend redirect)
+  useEffect(() => {
+    const error = searchParams.get('error');
+    const message = searchParams.get('message');
+    
+    if (error === 'unauthorized') {
+      const errorMsg = message ? decodeURIComponent(message) : 'Your email is not authorized. Please contact an administrator.';
+      setServerError(errorMsg);
+      toast.error('Email not authorized');
+    } else if (error === 'auth_error' && message) {
+      setServerError(decodeURIComponent(message));
+      toast.error('Authentication failed');
+    }
+  }, [searchParams]);
 
   const {
     register,
@@ -84,15 +101,53 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      await authClient.signIn.social({
-        provider,
-        callbackURL: `${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
-      });
-    } catch (error: unknown) {
-      console.log(error);
-      setServerError(`Failed to sign in with ${provider}. Please try again.`);
+      await authClient.signIn.social(
+        {
+          provider,
+          callbackURL: `${process.env.NEXT_PUBLIC_CLIENT_URL}/profile`,
+        },
+        {
+          onError: (ctx) => {
+            console.error('[OAuth Error]', ctx.error);
+            const errorMessage = ctx.error?.message || '';
+            
+            // Check for authorization errors
+            if (
+              errorMessage.includes('not authorized') ||
+              errorMessage.includes('not on the authorized') ||
+              errorMessage.includes('Unauthorized email')
+            ) {
+              setServerError(
+                'Your email is not on the authorized list. Please contact an administrator to get your email whitelisted.'
+              );
+              toast.error('Email not authorized');
+            } else {
+              setServerError(`Failed to sign in with ${provider}. Please try again.`);
+              toast.error(`Failed to sign in with ${provider}`);
+            }
+          },
+        }
+      );
+    } catch (error: any) {
+      console.error('[OAuth Exception]', error);
+      const errorMessage = error?.message || '';
+      
+      // Check for authorization errors in exception
+      if (
+        errorMessage.includes('not authorized') ||
+        errorMessage.includes('not on the authorized') ||
+        errorMessage.includes('Unauthorized email')
+      ) {
+        setServerError(
+          'Your email is not on the authorized list. Please contact an administrator to get your email whitelisted.'
+        );
+        toast.error('Email not authorized');
+      } else {
+        setServerError(`Failed to sign in with ${provider}. Please try again.`);
+      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const isFormDisabled = isLoading || isSubmitting;
